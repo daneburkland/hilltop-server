@@ -1,0 +1,31 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "DeleteModel",
+      "model": "Post"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "tests",
+      "type": "Test",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "password"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "posts"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "Test"
+    }
+  ]
+}

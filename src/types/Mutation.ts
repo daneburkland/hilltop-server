@@ -1,6 +1,8 @@
 import { intArg, mutationType, stringArg, booleanArg } from '@nexus/schema'
 import { getUser } from '../utils'
-import testQueue from '../workers/testRunner'
+const Queue = require('bull')
+const logger = require('pino')()
+const testQueue = new Queue('testQueue', process.env.REDIS_URL)
 
 export const Mutation = mutationType({
   definition(t) {
@@ -39,21 +41,20 @@ export const Mutation = mutationType({
         const { sub: id } = await getUser(ctx)
         if (!id) throw new Error('Could not authenticate user.')
 
-        const test = await ctx.prisma.test.create({
-          data: {
-            title,
-            code,
-            author: { connect: { id } },
-          },
-        })
-
         try {
-          testQueue.add(test)
-        } catch (e) {
-          console.log(e)
-        }
+          const test = await ctx.prisma.test.create({
+            data: {
+              title,
+              code,
+              author: { connect: { id } },
+            },
+          })
 
-        return test
+          testQueue.add(test)
+          return test
+        } catch (e) {
+          logger.error(`Failed to create test: ${e}`)
+        }
       },
     })
 

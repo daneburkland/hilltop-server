@@ -3,12 +3,13 @@ import runTest from './tasks/runTest'
 import { Job } from 'bull'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
+const logger = require('pino')()
 
 const testQueue = new Queue('testQueue', process.env.REDIS_URL)
 try {
   testQueue.process(runTest)
 } catch (e) {
-  console.error(e)
+  logger.error(`Failed to process test run: ${e}`)
 }
 testQueue.on(
   'completed',

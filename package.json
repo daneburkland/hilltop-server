@@ -10,7 +10,7 @@
     "generate:nexus": "ts-node --transpile-only src/schema",
     "postinstall": "npm -s run generate",
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server",
-    "dev-worker": "ts-node-dev --no-notify --respawn --transpileOnly src/workers/testRunner"
+    "dev-worker": "ts-node-dev src/workers/testRunner"
   },
   "dependencies": {
     "@nexus/schema": "0.14.0",
@@ -25,6 +25,7 @@
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.8.1",
     "nexus-plugin-prisma": "^0.16.1",
+    "pino": "^6.3.2",
     "puppeteer": "^5.0.0",
     "vm2": "^3.9.2",
     "xstate": "^4.11.0"

@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer')
 import { NodeVM } from 'vm2'
+const logger = require('pino')()
 
 interface IRun {
   code(page: any): Promise<any>
@@ -7,17 +8,18 @@ interface IRun {
 
 export default class BrowserService {
   static async run({ code }: IRun) {
+    logger.info('Starting test run')
     const logs = [] as Array<String>
     try {
-      const originalStdoutWrite = process.stdout.write.bind(process.stdout)
+      // const originalStdoutWrite = process.stdout.write.bind(process.stdout)
 
-      process.stdout.write = (chunk: any, encoding: any, callback: any) => {
-        if (typeof chunk === 'string') {
-          logs.push(chunk)
-        }
+      // process.stdout.write = (chunk: any, encoding: any, callback: any) => {
+      //   if (typeof chunk === 'string') {
+      //     logs.push(chunk)
+      //   }
 
-        return originalStdoutWrite(chunk, encoding, callback)
-      }
+      //   return originalStdoutWrite(chunk, encoding, callback)
+      // }
 
       const browser = await puppeteer.launch({})
       const page = await browser.newPage()
@@ -37,13 +39,12 @@ export default class BrowserService {
       // Should wrap this in try catch, and return a { result, error } object?
       const result = await handler({ page })
 
-      console.log('***logs start***', logs, '**logs end**')
-
       // browser.close()
+      logger.info('Test run success')
 
       return { result, logs }
     } catch (e) {
-      console.log(e)
+      logger.error(`Test run error: ${e}`)
       return { result: e, logs }
     }
   }

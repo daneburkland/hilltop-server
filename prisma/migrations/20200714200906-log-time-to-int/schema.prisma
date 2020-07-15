@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model TestRun {
@@ -36,11 +36,11 @@ model User {
 }
 
 model Log {
-  id        Int      @default(autoincrement()) @id
-  testRun   TestRun  @relation(fields: [testRunId], references: [id])
+  id        Int     @default(autoincrement()) @id
+  testRun   TestRun @relation(fields: [testRunId], references: [id])
   testRunId Int
   level     Int
-  time      DateTime
+  time      Int
   pid       Int
   hostname  String
   msg       String

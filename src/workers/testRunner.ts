@@ -1,3 +1,4 @@
+require('dotenv').config()
 const Queue = require('bull')
 import runTest from './tasks/runTest'
 import { Job } from 'bull'
@@ -6,6 +7,7 @@ const prisma = new PrismaClient()
 const logger = require('pino')()
 
 const testQueue = new Queue('testQueue', process.env.REDIS_URL)
+
 try {
   testQueue.process(runTest)
 } catch (e) {

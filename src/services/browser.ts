@@ -1,25 +1,26 @@
 const puppeteer = require('puppeteer')
 import { NodeVM } from 'vm2'
-const logger = require('pino')()
+import { logger as parentLogger } from '../workers/tasks/runTest'
 
 interface IRun {
   code(page: any): Promise<any>
+  runs: any
 }
 
 export default class BrowserService {
-  static async run({ code }: IRun) {
-    logger.info('Starting test run')
+  static async run({ code, runs }: IRun) {
+    const logger = parentLogger.child({ testRunId: runs[0].id })
     const logs = [] as Array<String>
     try {
+      logger.info('Starting test run')
       // const originalStdoutWrite = process.stdout.write.bind(process.stdout)
 
-      // process.stdout.write = (chunk: any, encoding: any, callback: any) => {
-      //   if (typeof chunk === 'string') {
-      //     logs.push(chunk)
-      //   }
+      // rewrite user supplied stdout with pino
+      process.stdout.write = (chunk: any, encoding: any, callback: any) => {
+        logger.info(chunk)
 
-      //   return originalStdoutWrite(chunk, encoding, callback)
-      // }
+        // return originalStdoutWrite(chunk, encoding, callback)
+      }
 
       const browser = await puppeteer.launch({})
       const page = await browser.newPage()

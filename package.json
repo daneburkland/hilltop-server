@@ -10,10 +10,11 @@
     "generate:nexus": "ts-node --transpile-only src/schema",
     "postinstall": "npm -s run generate",
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server",
-    "dev-worker": "ts-node-dev src/workers/testRunner"
+    "dev-worker": "ts-node-dev --no-notify --respawn --transpileOnly src/workers/testRunner | ts-node-dev src/workers/logger"
   },
   "dependencies": {
     "@nexus/schema": "0.14.0",
+    "@types/pg": "^7.14.4",
     "@types/puppeteer": "^3.0.1",
     "@xstate/test": "^0.4.0",
     "bcryptjs": "2.4.3",
@@ -25,8 +26,10 @@
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.8.1",
     "nexus-plugin-prisma": "^0.16.1",
+    "pg": "^8.3.0",
     "pino": "^6.3.2",
     "puppeteer": "^5.0.0",
+    "split2": "^3.1.1",
     "vm2": "^3.9.2",
     "xstate": "^4.11.0"
   },

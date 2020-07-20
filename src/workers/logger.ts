@@ -28,25 +28,29 @@ class PgTransport extends Transform {
       // pass it through non-json.
       return callback(null, `${chunk}\n`)
     }
-    console.log('log', log)
-    this.client
-      .query(
-        `INSERT INTO "Log"("testRunId", level, time, pid, hostname, msg) VALUES($1, $2, $3, $4, $5, $6)`,
-        [
-          log.testRunId || null,
-          log.level,
-          new Date(parseInt(log.time)),
-          log.pid,
-          log.hostname,
-          log.msg,
-        ],
-      )
-      .then(
-        () => {
-          callback(null, `${chunk}\n`)
-        },
-        (err) => callback(err, null),
-      )
+    if (log.msg && log.testRunId) {
+      this.client
+        .query(
+          `INSERT INTO "Log"("testRunId", level, time, pid, hostname, msg, stack) VALUES($1, $2, $3, $4, $5, $6, $7)`,
+          [
+            log.testRunId || null,
+            log.level,
+            new Date(parseInt(log.time)),
+            log.pid,
+            log.hostname,
+            log.msg,
+            log.stack,
+          ],
+        )
+        .then(
+          () => {
+            callback(null, `${chunk}\n`)
+          },
+          (err) => callback(err, null),
+        )
+    } else {
+      console.log('Did not supply msg or testRunId')
+    }
   }
 }
 

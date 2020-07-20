@@ -1,28 +1,36 @@
 const puppeteer = require('puppeteer')
-import { NodeVM } from 'vm2'
-import { logger as parentLogger } from '../workers/tasks/runTest'
+import { NodeVM, VMScript } from 'vm2'
+import { logger as parentLogger } from '../workers/tasks/launchTest'
 
 interface IRun {
   code(page: any): Promise<any>
-  runs: any
+  id: Number
 }
 
+const screenshotScript = new VMScript(`
+const fs = require('fs')
+module.exports = function() {
+  const filenames = fs.readdirSync(__dirname)
+  return filenames
+}
+`)
+
 export default class BrowserService {
-  static async run({ code, runs }: IRun) {
-    const logger = parentLogger.child({ testRunId: runs[0].id })
+  static async run({ code, id }: IRun) {
+    const logger = parentLogger.child({ testRunId: id })
     const logs = [] as Array<String>
     try {
       logger.info('Starting test run')
-      // const originalStdoutWrite = process.stdout.write.bind(process.stdout)
-
-      // rewrite user supplied stdout with pino
-      process.stdout.write = (chunk: any, encoding: any, callback: any) => {
-        logger.info(chunk)
-
-        // return originalStdoutWrite(chunk, encoding, callback)
-      }
-
-      const browser = await puppeteer.launch({})
+      const browser = await puppeteer.launch({
+        args: [
+          // Required for Docker version of Puppeteer
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          // This will write shared memory files into /tmp instead of /dev/shm,
+          // because Docker’s default for /dev/shm is 64MB
+          '--disable-dev-shm-usage',
+        ],
+      })
       const page = await browser.newPage()
       page.setDefaultTimeout(10000)
 
@@ -32,13 +40,18 @@ export default class BrowserService {
       const vm: any = new NodeVM({
         require: {
           external: ['xstate', '@xstate/test'],
-          builtin: ['assert'],
+          builtin: ['assert', 'fs'],
         },
       })
+      // This should be in the docker sandbox, and the file should have already been
+      // mounted by the launcher process and be something like
       const handler = vm.run(code, './foo.js')
 
       // Should wrap this in try catch, and return a { result, error } object?
-      const result = await handler({ page })
+      const result = await handler({ page, logger })
+
+      const screenshotsHandler = vm.run(screenshotScript)
+      const screenshots = await screenshotsHandler()
 
       // browser.close()
       logger.info('Test run success')

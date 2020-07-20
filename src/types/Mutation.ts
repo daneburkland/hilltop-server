@@ -86,8 +86,7 @@ export const Mutation = mutationType({
 
         try {
           if (run) {
-            // I should just munge the data into the testRun shape here
-            testQueue.add(test)
+            testQueue.add({ id: test.runs[0].id, code: test.code })
           }
         } catch (e) {
           console.log(e)

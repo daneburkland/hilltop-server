@@ -1,12 +1,11 @@
+const fs = require('fs')
 import BrowserService from '../../services/browser'
-export const logger = require('pino')()
 
-import { Job, DoneCallback } from 'bull'
+const job = fs.readFileSync('../../job/job.txt')
+const parsed = JSON.parse(job)
 
-const run = async (job: Job, done: DoneCallback) => {
-  const result = await BrowserService.run(job.data)
-
-  done(null, result)
+async function run() {
+  const result = await BrowserService.run(parsed)
 }
 
-export default run
+run()

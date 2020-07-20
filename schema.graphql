@@ -9,6 +9,21 @@ type AuthPayload {
 
 scalar DateTime
 
+type Log {
+  hostname: String!
+  id: Int!
+  level: Int!
+  msg: String!
+  pid: Int!
+  stack: String
+  testRun: TestRun!
+  time: DateTime!
+}
+
+input LogWhereUniqueInput {
+  id: Int
+}
+
 type Mutation {
   createTest(code: String!, title: String!): Test!
   login(email: String!, name: String!): User!
@@ -34,7 +49,7 @@ type Test {
 type TestRun {
   createdAt: DateTime!
   id: Int!
-  logs: [String!]!
+  logs(after: LogWhereUniqueInput, before: LogWhereUniqueInput, first: Int, last: Int): [Log!]!
   result: String!
   test: Test!
 }

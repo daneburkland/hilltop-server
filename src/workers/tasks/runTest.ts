@@ -5,7 +5,12 @@ const job = fs.readFileSync('../../job/job.txt')
 const parsed = JSON.parse(job)
 
 async function run() {
-  const result = await BrowserService.run(parsed)
+  try {
+    const result = await BrowserService.run(parsed)
+    console.log(JSON.stringify(result))
+  } catch (e) {
+    console.log(JSON.stringify({ result: e }))
+  }
 }
 
 run()

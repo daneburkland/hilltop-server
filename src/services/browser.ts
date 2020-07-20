@@ -18,7 +18,6 @@ module.exports = function() {
 export default class BrowserService {
   static async run({ code, id }: IRun) {
     const logger = parentLogger.child({ testRunId: id })
-    const logs = [] as Array<String>
     try {
       logger.info('Starting test run')
       const browser = await puppeteer.launch({
@@ -56,10 +55,10 @@ export default class BrowserService {
       // browser.close()
       logger.info('Test run success')
 
-      return { result, logs }
+      return { result }
     } catch (e) {
       logger.error(`Test run error: ${e}`)
-      return { result: e, logs }
+      return { result: e }
     }
   }
 }

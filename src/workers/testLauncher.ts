@@ -40,19 +40,16 @@ try {
 } catch (e) {
   logger.error(`Failed to process test run: ${e}`)
 }
-testQueue.on(
-  'completed',
-  async (job: Job, { result }: { result: any; logs: Array<any> }) => {
-    await prisma.testRun.update({
-      where: {
-        id: job.data.id,
-      },
-      data: {
-        result: JSON.stringify(result),
-      },
-    })
-    job.remove()
-  },
-)
+testQueue.on('completed', async (job: Job, result: any) => {
+  await prisma.testRun.update({
+    where: {
+      id: job.data.id,
+    },
+    data: {
+      result: JSON.stringify(result),
+    },
+  })
+  job.remove()
+})
 
 export default testQueue

@@ -49,6 +49,7 @@ class PgTransport extends Transform {
           (err) => callback(err, null),
         )
     } else {
+      callback(null, `${chunk}\n`)
       console.log('Did not supply msg or testRunId')
     }
   }

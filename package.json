@@ -12,7 +12,7 @@
     "set-db-url": "DATABASE_URL=$(heroku config:get DATABASE_URL -a proton-postgres)",
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server",
     "testLauncher": "ts-node-dev --no-notify --respawn --transpileOnly src/workers/testLauncher",
-    "testRunner": "ts-node-dev --no-notify --respawn --transpileOnly src/workers/tasks/runTest | ts-node-dev src/workers/logger"
+    "testRunner": "ts-node-dev --no-notify --respawn --transpileOnly testRunner/runTest | ts-node-dev testRunner/logger"
   },
   "dependencies": {
     "@nexus/schema": "0.14.0",
@@ -32,7 +32,6 @@
     "nexus-plugin-prisma": "^0.16.1",
     "pg": "^8.3.0",
     "pino": "^6.3.2",
-    "puppeteer": "^5.0.0",
     "split2": "^3.1.1",
     "vm2": "^3.9.2",
     "xstate": "^4.11.0"

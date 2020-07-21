@@ -12,12 +12,7 @@ COPY . .
 EXPOSE 4000
 
 # Install Puppeteer under /node_modules so it's available system-wide
-ADD package.json package-lock.json /
-# COPY package.json ./
+ADD package.json /
 RUN npm install
-RUN npm -s run generate
 
-# CMD node src/workers/testLauncher > node-dev src/workers/logger
-# CMD ["/bin/sh", "entrypoint.sh"]
 CMD ["npm", "run", "testRunner"]
-# RUN ts-node src/workers/testLauncher | ts-node-dev src/workers/logger

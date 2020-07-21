@@ -8,18 +8,24 @@ import { Container } from 'dockerode'
 
 const dockerode = new Docker()
 
+async function uploadScreenshots(dir: any) {
+  fs.readdirSync(dir).forEach((file) => {
+    console.log(file)
+  })
+}
+
 function containerLogs(container: Container, dir: String, done: any) {
   // create a single stream for stdin and stdout
   var logStream = new stream.PassThrough()
   logStream.on('data', function (chunk: any) {
     const log = chunk.toString('utf8')
-    // CHeck to see if chunk.result?
     try {
       const parsed = JSON.parse(log)
       console.log('parsed', parsed)
       if (parsed.result) {
         container.stop().then(() => {
-          container.remove().then(() => {
+          container.remove().then(async () => {
+            await uploadScreenshots(dir)
             logger.info('Succesfully removed container')
             fs.rmdirSync(dir, { recursive: true })
             logger.info('Successfully deleted working directory')
@@ -44,10 +50,6 @@ function containerLogs(container: Container, dir: String, done: any) {
       stream.on('end', function () {
         logStream.end('!stop!')
       })
-
-      // setTimeout(function () {
-      //   stream.destroy()
-      // }, 2000)
     },
   )
 }

@@ -1,19 +1,11 @@
 const puppeteer = require('puppeteer')
 import { NodeVM, VMScript } from 'vm2'
-import { logger as parentLogger } from '../workers/tasks/launchTest'
+const parentLogger = require('pino')()
 
 interface IRun {
   code(page: any): Promise<any>
   id: Number
 }
-
-const screenshotScript = new VMScript(`
-const fs = require('fs')
-module.exports = function() {
-  const filenames = fs.readdirSync(__dirname)
-  return filenames
-}
-`)
 
 export default class BrowserService {
   static async run({ code, id }: IRun) {
@@ -49,8 +41,8 @@ export default class BrowserService {
       // Should wrap this in try catch, and return a { result, error } object?
       const result = await handler({ page, logger })
 
-      const screenshotsHandler = vm.run(screenshotScript)
-      const screenshots = await screenshotsHandler()
+      // const screenshotsHandler = vm.run(screenshotScript)
+      // const screenshots = await screenshotsHandler()
 
       // browser.close()
       logger.info('Test run success')

@@ -15,7 +15,7 @@ async function buildImage() {
   try {
     const stream = await dockerode.buildImage(
       {
-        context: path.join(__dirname, '../..'),
+        context: path.join(__dirname, '../testRunner'),
         src: ['Dockerfile'],
       },
       { t: 'worker' },

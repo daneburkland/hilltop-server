@@ -9,7 +9,6 @@
     "generate:prisma": "prisma generate",
     "generate:nexus": "ts-node --transpile-only src/schema",
     "postinstall": "npm -s run generate",
-    "set-db-url": "DATABASE_URL=$(heroku config:get DATABASE_URL -a proton-postgres)",
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server",
     "testLauncher": "ts-node-dev --no-notify --respawn --transpileOnly src/workers/testLauncher",
     "testRunner": "ts-node-dev --no-notify --respawn --transpileOnly testRunner/runTest | ts-node-dev testRunner/logger"
@@ -20,6 +19,7 @@
     "@types/pg": "^7.14.4",
     "@types/puppeteer": "^3.0.1",
     "@xstate/test": "^0.4.0",
+    "aws-sdk": "^2.716.0",
     "bcryptjs": "2.4.3",
     "bull": "^3.15.0",
     "dockerode": "^3.2.0",

@@ -1,35 +1,76 @@
+const path = require('path')
 const fs = require('fs')
 export const logger = require('pino')()
 const Docker = require('dockerode')
 const stream = require('stream')
+const AWS = require('aws-sdk')
 
 import { Job, DoneCallback } from 'bull'
 import { Container } from 'dockerode'
 
 const dockerode = new Docker()
 
-async function uploadScreenshots(dir: any) {
-  fs.readdirSync(dir).forEach((file) => {
-    console.log(file)
-  })
+const s3 = new AWS.S3({
+  accessKeyId: process.env.S3_ACCESS_KEY,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+})
+
+async function uploadScreenshots(dir: any, testRunId: string) {
+  const screenshotUrls = await Promise.all(
+    fs
+      .readdirSync(dir)
+      .filter((file) =>
+        ['.png', '.jpg'].includes(path.extname(file).toLowerCase()),
+      )
+      .map(async (file) => {
+        const data = await fs.readFileSync(`${dir}/${file}`)
+        const params = {
+          Bucket: process.env.S3_BUCKET,
+          Key: `${testRunId}/${file}`,
+          Body: data,
+        }
+        let url = null
+        return new Promise(function (resolve, reject) {
+          s3.upload(params, function (err, data) {
+            if (err) {
+              reject(err)
+            } else {
+              logger.info(`Uploaded screenshot: ${data.Location}`)
+              resolve(data.Location)
+            }
+          })
+        })
+      }),
+  )
+
+  return screenshotUrls
 }
 
-function containerLogs(container: Container, dir: String, done: any) {
+function containerLogs({
+  container,
+  dir,
+  done,
+  testRunId,
+}: {
+  container: Container
+  dir: string
+  done: any
+  testRunId: string
+}) {
   // create a single stream for stdin and stdout
   var logStream = new stream.PassThrough()
   logStream.on('data', function (chunk: any) {
     const log = chunk.toString('utf8')
     try {
       const parsed = JSON.parse(log)
-      console.log('parsed', parsed)
       if (parsed.result) {
         container.stop().then(() => {
           container.remove().then(async () => {
-            await uploadScreenshots(dir)
+            const screenshotUrls = await uploadScreenshots(dir, testRunId)
             logger.info('Succesfully removed container')
             fs.rmdirSync(dir, { recursive: true })
             logger.info('Successfully deleted working directory')
-            done(null, parsed.result)
+            done(null, { screenshotUrls, result: parsed.result })
           })
         })
       }
@@ -91,7 +132,7 @@ const run = async (job: Job, done: DoneCallback) => {
 
           container.start({}, function (err, data) {
             console.error(err)
-            containerLogs(container, dir, done)
+            containerLogs({ container, dir, done, testRunId: job.data.id })
           })
         },
       )

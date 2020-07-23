@@ -8,5 +8,6 @@ export const TestRun = objectType({
     t.model.result()
     t.model.test()
     t.model.logs()
+    t.model.screenshotUrls()
   },
 })

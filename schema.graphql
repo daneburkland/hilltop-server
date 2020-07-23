@@ -51,6 +51,7 @@ type TestRun {
   id: Int!
   logs(after: LogWhereUniqueInput, before: LogWhereUniqueInput, first: Int, last: Int): [Log!]!
   result: String!
+  screenshotUrls: [String!]!
   test: Test!
 }
 

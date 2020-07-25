@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model TestRun {
@@ -41,7 +41,7 @@ model ApiKey {
   hashed String @unique
   prefix String
   user   User   @relation(fields: [userId], references: [id])
-  userId String @unique
+  userId String
 }
 
 model Log {

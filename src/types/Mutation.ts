@@ -3,6 +3,39 @@ import { getUser } from '../utils'
 const Queue = require('bull')
 const logger = require('pino')()
 const testQueue = new Queue('testQueue', process.env.REDIS_URL)
+const crypto = require('crypto')
+
+const generateApiKeyMutation = (t: any) => {
+  t.field('generateApiKey', {
+    type: 'GeneratedApiKey',
+    resolve: async (_parent, _, ctx) => {
+      const { id } = await getUser(ctx)
+      if (!id) throw new Error('Count not authenticate user.')
+
+      const key = crypto.randomBytes(32).toString('hex')
+      const hashed = crypto.createHash('sha256').update(key).digest('hex')
+      const prefix = crypto.randomBytes(2).toString('hex')
+      try {
+        const apiKey = await ctx.prisma.apiKey.upsert({
+          where: { userId: id },
+          update: {
+            hashed,
+            prefix,
+          },
+          create: {
+            hashed,
+            prefix,
+            user: { connect: { id } },
+          },
+        })
+
+        return { ...apiKey, key }
+      } catch (e) {
+        logger.error(`Failed to generate API key: ${e}`)
+      }
+    },
+  })
+}
 
 export const Mutation = mutationType({
   definition(t) {
@@ -14,7 +47,7 @@ export const Mutation = mutationType({
       },
       resolve: async (_parent, { email, name }, ctx) => {
         const userData = await getUser(ctx)
-        const { sub: id } = userData
+        const { id } = userData
         const user = await ctx.prisma.user.upsert({
           where: { id: id },
           create: {
@@ -31,6 +64,8 @@ export const Mutation = mutationType({
       },
     })
 
+    generateApiKeyMutation(t)
+
     t.field('createTest', {
       type: 'Test',
       args: {
@@ -38,7 +73,7 @@ export const Mutation = mutationType({
         code: stringArg({ nullable: false }),
       },
       resolve: async (parent, { title, code }, ctx) => {
-        const { sub: id } = await getUser(ctx)
+        const { id } = await getUser(ctx)
         if (!id) throw new Error('Could not authenticate user.')
 
         try {
@@ -95,30 +130,5 @@ export const Mutation = mutationType({
         return test
       },
     })
-
-    // t.field('deletePost', {
-    //   type: 'Post',
-    //   nullable: true,
-    //   args: { id: intArg({ nullable: false }) },
-    //   resolve: (parent, { id }, ctx) => {
-    //     return ctx.prisma.post.delete({
-    //       where: {
-    //         id,
-    //       },
-    //     })
-    //   },
-    // })
-
-    // t.field('publish', {
-    //   type: 'Post',
-    //   nullable: true,
-    //   args: { id: intArg() },
-    //   resolve: (parent, { id }, ctx) => {
-    //     return ctx.prisma.post.update({
-    //       where: { id },
-    //       data: { published: true },
-    //     })
-    //   },
-    // })
   },
 })

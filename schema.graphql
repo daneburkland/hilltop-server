@@ -2,12 +2,23 @@
 ### Do not make changes to this file directly
 
 
+type ApiKey {
+  hashed: String!
+  prefix: String!
+  userId: String!
+}
+
 type AuthPayload {
   token: String!
   user: User!
 }
 
 scalar DateTime
+
+type GeneratedApiKey {
+  key: String!
+  prefix: String!
+}
 
 type Log {
   hostname: String!
@@ -26,6 +37,7 @@ input LogWhereUniqueInput {
 
 type Mutation {
   createTest(code: String!, title: String!): Test!
+  generateApiKey: GeneratedApiKey!
   login(email: String!, name: String!): User!
   updateTest(code: String!, id: Int!, run: Boolean, title: String!): Test!
 }

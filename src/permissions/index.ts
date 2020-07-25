@@ -3,12 +3,12 @@ import { getUser } from '../utils'
 
 const rules = {
   isAuthenticatedUser: rule()(async (parent, args, context) => {
-    const { sub } = await getUser(context)
+    const { id } = await getUser(context)
 
-    return Boolean(sub)
+    return Boolean(id)
   }),
   isTestOwner: rule()(async (parent, { id }, context) => {
-    const { sub: userId } = await getUser(context)
+    const { id: userId } = await getUser(context)
     const author = await context.prisma.test
       .findOne({
         where: {
@@ -25,9 +25,12 @@ export const permissions = shield({
   Query: {
     myTests: rules.isAuthenticatedUser,
     test: rules.isTestOwner,
+    // TODO: should create a isTestRunOwner
+    testRun: rules.isAuthenticatedUser,
   },
   Mutation: {
     createTest: rules.isAuthenticatedUser,
     updateTest: rules.isTestOwner,
+    generateApiKey: rules.isAuthenticatedUser,
   },
 })

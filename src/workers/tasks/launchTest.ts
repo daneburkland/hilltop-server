@@ -29,7 +29,6 @@ async function uploadScreenshots(dir: any, testRunId: string) {
           Key: `${testRunId}/${file}`,
           Body: data,
         }
-        let url = null
         return new Promise(function (resolve, reject) {
           s3.upload(params, function (err, data) {
             if (err) {
@@ -66,7 +65,12 @@ function containerLogs({
       if (parsed.result) {
         container.stop().then(() => {
           container.remove().then(async () => {
-            const screenshotUrls = await uploadScreenshots(dir, testRunId)
+            let screenshotUrls = [] as Array<any>
+            try {
+              screenshotUrls = await uploadScreenshots(dir, testRunId)
+            } catch (e) {
+              logger.error(`Failed to upload screenshots: ${e}`)
+            }
             logger.info('Succesfully removed container')
             fs.rmdirSync(dir, { recursive: true })
             logger.info('Successfully deleted working directory')

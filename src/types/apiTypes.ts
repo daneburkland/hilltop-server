@@ -1,5 +1,5 @@
-export * from './Mutation'
-export * from './Query'
+export * from './api/Mutation'
+export * from './api/Query'
 export * from './User'
 export * from './ApiKey'
 export * from './GeneratedApiKey'

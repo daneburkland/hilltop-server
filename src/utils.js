@@ -1,8 +1,6 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const jwksClient = require('jwks-rsa')
-const crypto = require('crypto')
-const logger = require('pino')
 
 const client = jwksClient({
   jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
@@ -19,7 +17,6 @@ const mungeGithubUser = (user) => ({ ...user, id: user.sub })
 
 async function getUser(context) {
   const Authorization = context.request.get('Authorization')
-  const apiKey = context.request.get('X-API-KEY')
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '')
     if (token) {
@@ -44,23 +41,6 @@ async function getUser(context) {
       })
 
       return mungeGithubUser(result)
-    }
-  }
-
-  if (apiKey) {
-    try {
-      const hashed = crypto.createHash('sha256').update(apiKey).digest('hex')
-      const { user } = await context.prisma.apiKey.findOne({
-        where: {
-          hashed,
-        },
-        include: { user: true },
-      })
-
-      return user
-    } catch (e) {
-      logger.error(e)
-      return e
     }
   }
 

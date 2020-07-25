@@ -32,9 +32,6 @@ input LogWhereUniqueInput {
 
 type Mutation {
   createTest(code: String!, title: String!): Test!
-  generateApiKey: GeneratedApiKey!
-  login(email: String!, name: String!): User!
-  updateTest(code: String!, id: Int!, run: Boolean, title: String!): Test!
 }
 
 type Query {

@@ -35,7 +35,7 @@ type Mutation {
 }
 
 type Query {
-  myTests: [Test!]!
+  myTests(orderBy: TestOrderByInput): [Test!]!
   test(id: Int): Test!
   testRun(id: Int): TestRun!
 }
@@ -48,6 +48,10 @@ type Test {
   runs(after: TestRunWhereUniqueInput, before: TestRunWhereUniqueInput, first: Int, last: Int): [TestRun!]!
   title: String!
   updatedAt: DateTime!
+}
+
+input TestOrderByInput {
+  updatedAt: String
 }
 
 type TestRun {

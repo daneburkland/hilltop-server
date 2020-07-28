@@ -22,6 +22,9 @@ export interface NexusGenInputs {
   LogWhereUniqueInput: { // input type
     id?: number | null; // Int
   }
+  TestOrderByInput: { // input type
+    updatedAt?: string | null; // String
+  }
   TestRunWhereUniqueInput: { // input type
     id?: number | null; // Int
   }
@@ -79,6 +82,7 @@ export interface NexusGenRootTypes {
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
   LogWhereUniqueInput: NexusGenInputs['LogWhereUniqueInput'];
+  TestOrderByInput: NexusGenInputs['TestOrderByInput'];
   TestRunWhereUniqueInput: NexusGenInputs['TestRunWhereUniqueInput'];
 }
 
@@ -142,6 +146,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    myTests: { // args
+      orderBy?: NexusGenInputs['TestOrderByInput'] | null; // TestOrderByInput
+    }
     test: { // args
       id?: number | null; // Int
     }
@@ -174,7 +181,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "ApiKey" | "GeneratedApiKey" | "Log" | "Mutation" | "Query" | "Test" | "TestRun" | "User";
 
-export type NexusGenInputNames = "LogWhereUniqueInput" | "TestRunWhereUniqueInput";
+export type NexusGenInputNames = "LogWhereUniqueInput" | "TestOrderByInput" | "TestRunWhereUniqueInput";
 
 export type NexusGenEnumNames = never;
 

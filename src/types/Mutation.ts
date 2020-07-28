@@ -65,6 +65,32 @@ const loginMutation = (t) => {
   })
 }
 
+const inviteTeammateMutation = (t) => {
+  t.field('inviteTeammate', {
+    type: 'User',
+    args: {
+      email: stringArg({ nullable: false }),
+    },
+    resolve: async (_parent, { email }, ctx) => {
+      const userData = await getUser(ctx)
+      const { id } = userData
+
+      const inviter = await ctx.prisma.user.findOne({
+        where: {
+          id,
+        },
+      })
+      const user = await ctx.prisma.user.create({
+        data: {
+          email,
+          team: { connect: { id: inviter.teamId } },
+        },
+      })
+      return user
+    },
+  })
+}
+
 const updateTestMutation = (t) => {
   t.field('updateTest', {
     type: 'Test',
@@ -111,5 +137,6 @@ export const Mutation = mutationType({
     generateApiKeyMutation(t)
     createTestMutation(t)
     updateTestMutation(t)
+    inviteTeammateMutation(t)
   },
 })

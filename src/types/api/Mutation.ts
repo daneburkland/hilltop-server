@@ -1,5 +1,8 @@
 import { stringArg, mutationType } from '@nexus/schema'
 import { getUser } from '../../utils'
+const Queue = require('bull')
+const logger = require('pino')()
+const testQueue = new Queue('testQueue', process.env.REDIS_URL)
 
 export const createTestMutation = (t) => {
   t.field('createTest', {
@@ -18,10 +21,16 @@ export const createTestMutation = (t) => {
             title,
             code,
             author: { connect: { id } },
+            runs: {
+              create: [{ result: '' }],
+            },
+          },
+          include: {
+            runs: true,
           },
         })
 
-        testQueue.add(test)
+        testQueue.add({ id: test.runs[0].id, code: test.code })
         return test
       } catch (e) {
         logger.error(`Failed to create test: ${e}`)

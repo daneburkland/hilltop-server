@@ -8,6 +8,13 @@ const TestOrderByInput = inputObjectType({
   },
 })
 
+const TestRunOrderByInput = inputObjectType({
+  name: 'TestRunOrderByInput',
+  definition(t) {
+    t.string('createdAt', { nullable: true })
+  },
+})
+
 export const myTestQuery = (t) => {
   t.list.field('myTests', {
     type: 'Test',
@@ -58,6 +65,25 @@ export const testRunQuery = (t) => {
     resolve: async (parent, args, ctx) => {
       return ctx.prisma.testRun.findOne({
         where: { id: args.id },
+        include: {
+          test: true,
+        },
+      })
+    },
+  })
+}
+
+export const testRunsQuery = (t) => {
+  t.list.field('testRuns', {
+    type: 'TestRun',
+    args: {
+      id: intArg({ nullable: true }),
+      orderBy: arg({ type: TestRunOrderByInput as any }),
+    },
+    resolve: async (parent, args, ctx) => {
+      return ctx.prisma.testRun.findMany({
+        where: { testId: args.id },
+        orderBy: args.orderBy,
       })
     },
   })
@@ -68,5 +94,6 @@ export const Query = queryType({
     myTestQuery(t)
     testQuery(t)
     testRunQuery(t)
+    testRunsQuery(t)
   },
 })

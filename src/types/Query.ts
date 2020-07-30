@@ -1,5 +1,10 @@
 import { queryType } from '@nexus/schema'
-import { myTestQuery, testQuery, testRunQuery } from './api/Query'
+import {
+  myTestQuery,
+  testQuery,
+  testRunQuery,
+  testRunsQuery,
+} from './api/Query'
 import { getUser } from '../utils'
 
 export const userQuery = (t) => {
@@ -24,6 +29,7 @@ export const Query = queryType({
     myTestQuery(t)
     testQuery(t)
     testRunQuery(t)
+    testRunsQuery(t)
     userQuery(t)
   },
 })

@@ -4,7 +4,9 @@ import { createTestMutation } from './api/Mutation'
 const Queue = require('bull')
 const logger = require('pino')()
 const testQueue = new Queue('testQueue', process.env.REDIS_URL)
+const mailerQueue = new Queue('mailerQueue', process.env.REDIS_URL)
 const crypto = require('crypto')
+const fetch = require('node-fetch')
 
 const generateApiKeyMutation = (t: any) => {
   t.field('generateApiKey', {
@@ -80,12 +82,65 @@ const inviteTeammateMutation = (t) => {
           id,
         },
       })
+
+      const auth0Token = await fetch(
+        'https://dev-m01wp096.auth0.com/oauth/token',
+        {
+          method: 'post',
+          headers: { 'content-type': 'application/json' },
+          body: `{"client_id":"${process.env.AUTH0_CLIENT_ID}","client_secret":"${process.env.AUTH0_CLIENT_SECRET}","audience":"https://${process.env.AUTH0_DOMAIN}/api/v2/","grant_type":"client_credentials"}`,
+        },
+      )
+
+      const token = await auth0Token.json()
+
+      const auth0Response = await fetch(
+        `https://${process.env.AUTH0_DOMAIN}/api/v2/users`,
+        {
+          method: 'post',
+          body: JSON.stringify({
+            email,
+            password: 'initialPassword#1',
+            connection: 'Username-Password-Authentication',
+            verify_email: false,
+            email_verified: false,
+          }),
+          headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${token.access_token}`,
+          },
+        },
+      )
+
+      const auth0User = await auth0Response.json()
+
       const user = await ctx.prisma.user.create({
         data: {
           email,
+          id: auth0User.user_id,
           team: { connect: { id: inviter.teamId } },
         },
       })
+
+      const auth0PasswordResponse = await fetch(
+        `https://${process.env.AUTH0_DOMAIN}/api/v2/tickets/password-change`,
+        {
+          method: 'post',
+          body: JSON.stringify({
+            user_id: auth0User.user_id,
+            includeEmailInRedirect: true,
+          }),
+          headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${token.access_token}`,
+          },
+        },
+      )
+
+      const auth0PasswordLink = await auth0PasswordResponse.json()
+
+      mailerQueue.add({ email, url: auth0PasswordLink.ticket })
+
       return user
     },
   })

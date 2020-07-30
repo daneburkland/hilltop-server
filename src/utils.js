@@ -40,7 +40,7 @@ async function getUser(context) {
         )
       })
 
-      return mungeGithubUser(result)
+      return mungeGithubUser({ ...result, token })
     }
   }
 

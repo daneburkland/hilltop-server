@@ -36,6 +36,11 @@ export const testQuery = (t) => {
       return ctx.prisma.test.findOne({
         where: { id: args.id },
         include: {
+          author: {
+            include: {
+              team: true,
+            },
+          },
           // TODO: change this to true
           runs: { take: 1, skip: 3 },
         },

@@ -1,11 +1,10 @@
 import { objectType } from '@nexus/schema'
 
-export const User = objectType({
-  name: 'User',
+export const Team = objectType({
+  name: 'Team',
   definition(t) {
     t.model.id()
-    t.model.team()
+    t.model.members()
     t.model.name()
-    t.model.email()
   },
 })

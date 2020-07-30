@@ -42,6 +42,13 @@ type Query {
   myTests(orderBy: TestOrderByInput): [Test!]!
   test(id: Int): Test!
   testRun(id: Int): TestRun!
+  user: User!
+}
+
+type Team {
+  id: Int!
+  members(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+  name: String!
 }
 
 type Test {
@@ -75,5 +82,10 @@ type User {
   email: String!
   id: String!
   name: String
-  teamId: Int
+  team: Team
+}
+
+input UserWhereUniqueInput {
+  email: String
+  id: String
 }

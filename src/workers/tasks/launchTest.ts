@@ -4,6 +4,7 @@ export const logger = require('pino')()
 const Docker = require('dockerode')
 const stream = require('stream')
 const AWS = require('aws-sdk')
+const del = require('del')
 
 import { Job, DoneCallback } from 'bull'
 import { Container } from 'dockerode'
@@ -11,8 +12,8 @@ import { Container } from 'dockerode'
 const dockerode = new Docker()
 
 const s3 = new AWS.S3({
-  accessKeyId: process.env.S3_ACCESS_KEY,
-  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 })
 
 async function uploadScreenshots(dir: any, testRunId: string) {
@@ -71,8 +72,8 @@ function containerLogs({
             } catch (e) {
               logger.error(`Failed to upload screenshots: ${e}`)
             }
-            logger.info('Succesfully removed container')
-            fs.rmdirSync(dir, { recursive: true })
+            logger.info('Successfully removed container')
+            await del(dir)
             logger.info('Successfully deleted working directory')
             done(null, { screenshotUrls, result: parsed.result })
           })
@@ -115,7 +116,7 @@ const run = async (job: Job, done: DoneCallback) => {
         Mounts: [
           {
             Target: '/job',
-            Source: `/Users/daneburkland/Code/hilltop-server/${dir}/`,
+            Source: path.join(__dirname, '../../..', dir),
             Type: 'bind',
           },
         ],

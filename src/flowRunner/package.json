@@ -2,7 +2,7 @@
   "name": "hilltop-testrunner",
   "license": "MIT",
   "scripts": {
-    "testRunner": "ts-node-dev --no-notify --respawn --transpileOnly runTest | ts-node-dev logger"
+    "flowRunner": "ts-node-dev --no-notify --respawn --transpileOnly runFlow | ts-node-dev logger"
   },
   "dependencies": {
     "@types/pg": "^7.14.4",

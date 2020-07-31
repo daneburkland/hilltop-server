@@ -2,11 +2,11 @@ import { stringArg, mutationType } from '@nexus/schema'
 import { getUser } from '../../utils'
 const Queue = require('bull')
 const logger = require('pino')()
-const testQueue = new Queue('testQueue', process.env.REDIS_URL)
+const flowQueue = new Queue('flowQueue', process.env.REDIS_URL)
 
-export const createTestMutation = (t) => {
-  t.field('createTest', {
-    type: 'Test',
+export const createFlowMutation = (t) => {
+  t.field('createFlow', {
+    type: 'Flow',
     args: {
       title: stringArg({ nullable: false }),
       code: stringArg({ nullable: false }),
@@ -16,13 +16,13 @@ export const createTestMutation = (t) => {
       if (!id) throw new Error('Could not authenticate user.')
 
       try {
-        const test = await ctx.prisma.test.create({
+        const flow = await ctx.prisma.flow.create({
           data: {
             title,
             code,
             author: { connect: { id } },
             runs: {
-              create: [{ result: '' }],
+              create: [{ result: '', code }],
             },
           },
           include: {
@@ -30,10 +30,10 @@ export const createTestMutation = (t) => {
           },
         })
 
-        testQueue.add({ id: test.runs[0].id, code: test.code })
-        return test
+        flowQueue.add({ id: flow.runs[0].id, code: flow.code })
+        return flow
       } catch (e) {
-        logger.error(`Failed to create test: ${e}`)
+        logger.error(`Failed to create flow: ${e}`)
       }
     },
   })
@@ -41,6 +41,6 @@ export const createTestMutation = (t) => {
 
 export const Mutation = mutationType({
   definition(t) {
-    createTestMutation(t)
+    createFlowMutation(t)
   },
 })

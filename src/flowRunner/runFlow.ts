@@ -17,9 +17,8 @@ async function findScreenshots() {
 
 async function run() {
   try {
-    const result = await BrowserService.run(parsed)
+    await BrowserService.run(parsed)
     await findScreenshots()
-    console.log(JSON.stringify(result))
   } catch (e) {
     console.log(JSON.stringify({ result: e }))
   }

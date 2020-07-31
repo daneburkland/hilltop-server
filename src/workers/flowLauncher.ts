@@ -1,7 +1,7 @@
 require('dotenv').config()
 import * as path from 'path'
 const Queue = require('bull')
-import launchTest from './tasks/launchTest'
+import launchFlow from './tasks/launchFlow'
 import { Job } from 'bull'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
@@ -15,7 +15,7 @@ async function buildImage() {
   try {
     const stream = await dockerode.buildImage(
       {
-        context: path.join(__dirname, '../testRunner'),
+        context: path.join(__dirname, '../flowRunner'),
         src: ['Dockerfile'],
       },
       { t: 'worker' },
@@ -33,20 +33,20 @@ async function buildImage() {
 
 buildImage()
 
-const testQueue = new Queue('testQueue', process.env.REDIS_URL)
+const flowQueue = new Queue('flowQueue', process.env.REDIS_URL)
 
 try {
-  testQueue.process(launchTest)
+  flowQueue.process(launchFlow)
 } catch (e) {
-  logger.error(`Failed to process test run: ${e}`)
+  logger.error(`Failed to process flow run: ${e}`)
 }
-testQueue.on(
+flowQueue.on(
   'completed',
   async (
     job: Job,
     { result, screenshotUrls }: { result: any; screenshotUrls: Array<string> },
   ) => {
-    await prisma.testRun.update({
+    await prisma.flowRun.update({
       where: {
         id: job.data.id,
       },
@@ -61,4 +61,4 @@ testQueue.on(
   },
 )
 
-export default testQueue
+export default flowQueue

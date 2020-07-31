@@ -7,9 +7,9 @@ const rules = {
 
     return Boolean(id)
   }),
-  isTestOwner: rule()(async (parent, { id }, context) => {
+  isFlowOwner: rule()(async (parent, { id }, context) => {
     const { id: userId } = await getUser(context)
-    const author = await context.prisma.test
+    const author = await context.prisma.flow
       .findOne({
         where: {
           id,
@@ -19,15 +19,15 @@ const rules = {
 
     return userId === author.id
   }),
-  isTestRunOwner: rule()(async (parent, { id }, context) => {
+  isFlowRunOwner: rule()(async (parent, { id }, context) => {
     const { id: userId } = await getUser(context)
-    const author = await context.prisma.testRun
+    const author = await context.prisma.flowRun
       .findOne({
         where: {
           id,
         },
       })
-      .test()
+      .flow()
       .author()
 
     return userId === author.id
@@ -36,12 +36,12 @@ const rules = {
 
 export const permissions = shield({
   Query: {
-    myTests: rules.isAuthenticatedUser,
-    test: rules.isTestOwner,
-    // TODO: should create a isTestRunOwner
-    testRun: rules.isTestRunOwner,
+    myFlows: rules.isAuthenticatedUser,
+    flow: rules.isFlowOwner,
+    // TODO: should create a isFlowRunOwner
+    flowRun: rules.isFlowRunOwner,
   },
   Mutation: {
-    createTest: rules.isAuthenticatedUser,
+    createFlow: rules.isAuthenticatedUser,
   },
 })

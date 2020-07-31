@@ -1,30 +1,30 @@
 import { intArg, queryType, arg, inputObjectType } from '@nexus/schema'
 import { getUser } from '../../utils'
 
-const TestOrderByInput = inputObjectType({
-  name: 'TestOrderByInput',
+const FlowOrderByInput = inputObjectType({
+  name: 'FlowOrderByInput',
   definition(t) {
     t.string('updatedAt', { nullable: true })
   },
 })
 
-const TestRunOrderByInput = inputObjectType({
-  name: 'TestRunOrderByInput',
+const FlowRunOrderByInput = inputObjectType({
+  name: 'FlowRunOrderByInput',
   definition(t) {
     t.string('createdAt', { nullable: true })
   },
 })
 
-export const myTestQuery = (t) => {
-  t.list.field('myTests', {
-    type: 'Test',
+export const myFlowQuery = (t) => {
+  t.list.field('myFlows', {
+    type: 'Flow',
     args: {
       // This is fucked, why can't I use the generated type
-      orderBy: arg({ type: TestOrderByInput as any }),
+      orderBy: arg({ type: FlowOrderByInput as any }),
     },
     resolve: async (parent, args, ctx) => {
       const { sub: id } = await getUser(ctx)
-      return ctx.prisma.test.findMany({
+      return ctx.prisma.flow.findMany({
         where: { authorId: id },
         include: { author: true },
         orderBy: args.orderBy,
@@ -33,14 +33,14 @@ export const myTestQuery = (t) => {
   })
 }
 
-export const testQuery = (t) => {
-  t.field('test', {
-    type: 'Test',
+export const flowQuery = (t) => {
+  t.field('flow', {
+    type: 'Flow',
     args: {
       id: intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.test.findOne({
+      return ctx.prisma.flow.findOne({
         where: { id: args.id },
         include: {
           author: {
@@ -56,33 +56,33 @@ export const testQuery = (t) => {
   })
 }
 
-export const testRunQuery = (t) => {
-  t.field('testRun', {
-    type: 'TestRun',
+export const flowRunQuery = (t) => {
+  t.field('flowRun', {
+    type: 'FlowRun',
     args: {
       id: intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.testRun.findOne({
+      return ctx.prisma.flowRun.findOne({
         where: { id: args.id },
         include: {
-          test: true,
+          flow: true,
         },
       })
     },
   })
 }
 
-export const testRunsQuery = (t) => {
-  t.list.field('testRuns', {
-    type: 'TestRun',
+export const flowRunsQuery = (t) => {
+  t.list.field('flowRuns', {
+    type: 'FlowRun',
     args: {
       id: intArg({ nullable: true }),
-      orderBy: arg({ type: TestRunOrderByInput as any }),
+      orderBy: arg({ type: FlowRunOrderByInput as any }),
     },
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.testRun.findMany({
-        where: { testId: args.id },
+      return ctx.prisma.flowRun.findMany({
+        where: { flowId: args.id },
         orderBy: args.orderBy,
       })
     },
@@ -91,9 +91,9 @@ export const testRunsQuery = (t) => {
 
 export const Query = queryType({
   definition(t) {
-    myTestQuery(t)
-    testQuery(t)
-    testRunQuery(t)
-    testRunsQuery(t)
+    myFlowQuery(t)
+    flowQuery(t)
+    flowRunQuery(t)
+    flowRunsQuery(t)
   },
 })

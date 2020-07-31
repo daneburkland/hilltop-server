@@ -1,1 +1,1 @@
-npm run ts-node --no-notify --respawn --transpileOnly src/workers/testLauncher | ts-node src/workers/logger
+npm run ts-node --no-notify --respawn --transpileOnly src/workers/flowLauncher | ts-node src/workers/logger

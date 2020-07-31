@@ -5,36 +5,35 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
-model FlowRun {
+model Run {
   id             Int      @default(autoincrement()) @id
-  flow           Flow     @relation(fields: [flowId], references: [id])
-  flowId         Int
+  test           Test     @relation(fields: [testId], references: [id])
+  testId         Int
   result         String
-  code           String
   createdAt      DateTime @default(now())
   logs           Log[]
   screenshotUrls String[]
 }
 
-model Flow {
-  id        Int       @default(autoincrement()) @id
+model Test {
+  id        Int      @default(autoincrement()) @id
   title     String
-  author    User      @relation(fields: [authorId], references: [id])
-  authorId  String
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  String?
   code      String
-  runs      FlowRun[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
+  runs      Run[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }
 
 model User {
   id     String  @id
   email  String  @unique
-  name   String
-  flow   Flow[]
+  name   String?
+  tests  Test[]
   apiKey ApiKey?
   team   Team    @relation(fields: [teamId], references: [id])
   teamId Int
@@ -55,7 +54,7 @@ model ApiKey {
 
 model Log {
   id       Int      @default(autoincrement()) @id
-  run      FlowRun  @relation(fields: [runId], references: [id])
+  run      Run      @relation(fields: [runId], references: [id])
   runId    Int
   level    Int
   time     DateTime

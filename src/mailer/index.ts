@@ -9,7 +9,7 @@ const mailerQueue = new Queue('mailerQueue', process.env.REDIS_URL)
 try {
   mailerQueue.process(sendEmail)
 } catch (e) {
-  logger.error(`Failed to process test run: ${e}`)
+  logger.error(`Failed to process flow run: ${e}`)
 }
 mailerQueue.on('completed', async (job: Job, { result }: { result: any }) => {
   logger.info('Successfully sent email')

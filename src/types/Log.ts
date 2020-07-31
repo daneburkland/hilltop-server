@@ -4,7 +4,7 @@ export const Log = objectType({
   name: 'Log',
   definition(t) {
     t.model.id()
-    t.model.testRun()
+    t.model.run()
     t.model.level()
     t.model.time()
     t.model.pid()

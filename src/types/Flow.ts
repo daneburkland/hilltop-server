@@ -1,7 +1,7 @@
 import { objectType } from '@nexus/schema'
 
-export const Test = objectType({
-  name: 'Test',
+export const Flow = objectType({
+  name: 'Flow',
 
   definition(t) {
     t.model.id()

@@ -28,12 +28,12 @@ class PgTransport extends Transform {
       // pass it through non-json.
       return callback(null, `${chunk}\n`)
     }
-    if (log.msg && log.testRunId) {
+    if (log.msg && log.runId) {
       this.client
         .query(
-          `INSERT INTO "Log"("testRunId", level, time, pid, hostname, msg, stack) VALUES($1, $2, $3, $4, $5, $6, $7)`,
+          `INSERT INTO "Log"("runId", level, time, pid, hostname, msg, stack) VALUES($1, $2, $3, $4, $5, $6, $7)`,
           [
-            log.testRunId || null,
+            log.runId || null,
             log.level,
             new Date(parseInt(log.time)),
             log.pid,
@@ -50,7 +50,7 @@ class PgTransport extends Transform {
         )
     } else {
       callback(null, `${chunk}\n`)
-      console.log('Did not supply msg or testRunId')
+      console.log('Did not supply msg or runId')
     }
   }
 }
@@ -71,7 +71,6 @@ function transporter(client: Client) {
 }
 
 function main() {
-  console.log(process.env)
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: {

@@ -11,9 +11,9 @@
     "postinstall": "npm -s run generate",
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server",
     "dev-api": "ts-node-dev --no-notify --respawn --transpileOnly src/api/server",
-    "testLauncher": "ts-node-dev --no-notify --respawn --transpileOnly src/workers/testLauncher",
+    "flowLauncher": "ts-node-dev --no-notify --respawn --transpileOnly src/workers/flowLauncher",
     "mailer": "ts-node-dev --no-notify --respawn --transpileOnly src/mailer/",
-    "testRunner": "ts-node-dev --no-notify --respawn --transpileOnly testRunner/runTest | ts-node-dev testRunner/logger"
+    "flowRunner": "ts-node-dev --no-notify --respawn --transpileOnly flowRunner/runTest | ts-node-dev flowRunner/logger"
   },
   "dependencies": {
     "@nexus/schema": "0.14.0",

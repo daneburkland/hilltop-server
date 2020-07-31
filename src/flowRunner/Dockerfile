@@ -15,4 +15,4 @@ EXPOSE 4000
 ADD package.json /
 RUN npm install
 
-CMD ["npm", "run", "testRunner"]
+CMD ["npm", "run", "flowRunner"]

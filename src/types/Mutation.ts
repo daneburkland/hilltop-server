@@ -1,9 +1,9 @@
 import { intArg, mutationType, stringArg, booleanArg } from '@nexus/schema'
 import { getUser } from '../utils'
-import { createTestMutation } from './api/Mutation'
+import { createFlowMutation } from './api/Mutation'
 const Queue = require('bull')
 const logger = require('pino')()
-const testQueue = new Queue('testQueue', process.env.REDIS_URL)
+const flowQueue = new Queue('flowQueue', process.env.REDIS_URL)
 const mailerQueue = new Queue('mailerQueue', process.env.REDIS_URL)
 const crypto = require('crypto')
 const fetch = require('node-fetch')
@@ -146,9 +146,9 @@ const inviteTeammateMutation = (t) => {
   })
 }
 
-const updateTestMutation = (t) => {
-  t.field('updateTest', {
-    type: 'Test',
+const updateFlowMutation = (t) => {
+  t.field('updateFlow', {
+    type: 'Flow',
     args: {
       title: stringArg({ nullable: false }),
       code: stringArg({ nullable: false }),
@@ -156,14 +156,14 @@ const updateTestMutation = (t) => {
       id: intArg({ nullable: false }),
     },
     resolve: async (parent, { title, code, run, id }, ctx) => {
-      const test = await ctx.prisma.test.update({
+      const flow = await ctx.prisma.flow.update({
         where: { id },
         data: {
           title,
           code,
           updatedAt: new Date(),
           runs: {
-            create: [{ result: '' }],
+            create: [{ result: '', code }],
           },
         },
         include: {
@@ -175,13 +175,13 @@ const updateTestMutation = (t) => {
 
       try {
         if (run) {
-          testQueue.add({ id: test.runs[0].id, code: test.code })
+          flowQueue.add({ id: flow.runs[0].id, code: flow.code })
         }
       } catch (e) {
-        console.log(e)
+        logger.error(e)
       }
 
-      return test
+      return flow
     },
   })
 }
@@ -190,8 +190,8 @@ export const Mutation = mutationType({
   definition(t) {
     loginMutation(t)
     generateApiKeyMutation(t)
-    createTestMutation(t)
-    updateTestMutation(t)
+    createFlowMutation(t)
+    updateFlowMutation(t)
     inviteTeammateMutation(t)
   },
 })

@@ -10,6 +10,37 @@ type ApiKey {
 
 scalar DateTime
 
+type Flow {
+  author: User!
+  code: String!
+  createdAt: DateTime!
+  id: Int!
+  runs(after: FlowRunWhereUniqueInput, before: FlowRunWhereUniqueInput, first: Int, last: Int): [FlowRun!]!
+  title: String!
+  updatedAt: DateTime!
+}
+
+input FlowOrderByInput {
+  updatedAt: String
+}
+
+type FlowRun {
+  createdAt: DateTime!
+  flow: Flow!
+  id: Int!
+  logs(after: LogWhereUniqueInput, before: LogWhereUniqueInput, first: Int, last: Int): [Log!]!
+  result: String!
+  screenshotUrls: [String!]!
+}
+
+input FlowRunOrderByInput {
+  createdAt: String
+}
+
+input FlowRunWhereUniqueInput {
+  id: Int
+}
+
 type GeneratedApiKey {
   key: String!
   prefix: String!
@@ -21,8 +52,8 @@ type Log {
   level: Int!
   msg: String!
   pid: Int!
+  run: FlowRun!
   stack: String
-  testRun: TestRun!
   time: DateTime!
 }
 
@@ -31,18 +62,18 @@ input LogWhereUniqueInput {
 }
 
 type Mutation {
-  createTest(code: String!, title: String!): Test!
+  createFlow(code: String!, title: String!): Flow!
   generateApiKey: GeneratedApiKey!
   inviteTeammate(email: String!): User!
   login(email: String!, name: String!): User!
-  updateTest(code: String!, id: Int!, run: Boolean, title: String!): Test!
+  updateFlow(code: String!, id: Int!, run: Boolean, title: String!): Flow!
 }
 
 type Query {
-  myTests(orderBy: TestOrderByInput): [Test!]!
-  test(id: Int): Test!
-  testRun(id: Int): TestRun!
-  testRuns(id: Int, orderBy: TestRunOrderByInput): [TestRun!]!
+  flow(id: Int): Flow!
+  flowRun(id: Int): FlowRun!
+  flowRuns(id: Int, orderBy: FlowRunOrderByInput): [FlowRun!]!
+  myFlows(orderBy: FlowOrderByInput): [Flow!]!
   user: User!
 }
 
@@ -52,41 +83,10 @@ type Team {
   name: String!
 }
 
-type Test {
-  author: User
-  code: String!
-  createdAt: DateTime!
-  id: Int!
-  runs(after: TestRunWhereUniqueInput, before: TestRunWhereUniqueInput, first: Int, last: Int): [TestRun!]!
-  title: String!
-  updatedAt: DateTime!
-}
-
-input TestOrderByInput {
-  updatedAt: String
-}
-
-type TestRun {
-  createdAt: DateTime!
-  id: Int!
-  logs(after: LogWhereUniqueInput, before: LogWhereUniqueInput, first: Int, last: Int): [Log!]!
-  result: String!
-  screenshotUrls: [String!]!
-  test: Test!
-}
-
-input TestRunOrderByInput {
-  createdAt: String
-}
-
-input TestRunWhereUniqueInput {
-  id: Int
-}
-
 type User {
   email: String!
   id: String!
-  name: String
+  name: String!
   team: Team!
 }
 

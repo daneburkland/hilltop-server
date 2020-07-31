@@ -1,9 +1,9 @@
 import { queryType } from '@nexus/schema'
 import {
-  myTestQuery,
-  testQuery,
-  testRunQuery,
-  testRunsQuery,
+  myFlowQuery,
+  flowQuery,
+  flowRunQuery,
+  flowRunsQuery,
 } from './api/Query'
 import { getUser } from '../utils'
 
@@ -26,10 +26,10 @@ export const userQuery = (t) => {
 
 export const Query = queryType({
   definition(t) {
-    myTestQuery(t)
-    testQuery(t)
-    testRunQuery(t)
-    testRunsQuery(t)
+    myFlowQuery(t)
+    flowQuery(t)
+    flowRunQuery(t)
+    flowRunsQuery(t)
     userQuery(t)
   },
 })

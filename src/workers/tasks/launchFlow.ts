@@ -16,7 +16,7 @@ const s3 = new AWS.S3({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 })
 
-async function uploadScreenshots(dir: any, testRunId: string) {
+async function uploadScreenshots(dir: any, runId: string) {
   const screenshotUrls = await Promise.all(
     fs
       .readdirSync(dir)
@@ -27,18 +27,22 @@ async function uploadScreenshots(dir: any, testRunId: string) {
         const data = await fs.readFileSync(`${dir}/${file}`)
         const params = {
           Bucket: process.env.S3_BUCKET,
-          Key: `${testRunId}/${file}`,
+          Key: `${runId}/${file}`,
           Body: data,
         }
         return new Promise(function (resolve, reject) {
-          s3.upload(params, function (err, data) {
-            if (err) {
-              reject(err)
-            } else {
-              logger.info(`Uploaded screenshot: ${data.Location}`)
-              resolve(data.Location)
-            }
-          })
+          try {
+            s3.upload(params, function (err, data) {
+              if (err) {
+                reject(err)
+              } else {
+                logger.info(`Uploaded screenshot: ${data.Location}`)
+                resolve(data.Location)
+              }
+            })
+          } catch (e) {
+            logger.error(e)
+          }
         })
       }),
   )
@@ -50,12 +54,12 @@ function containerLogs({
   container,
   dir,
   done,
-  testRunId,
+  runId,
 }: {
   container: Container
   dir: string
   done: any
-  testRunId: string
+  runId: string
 }) {
   // create a single stream for stdin and stdout
   var logStream = new stream.PassThrough()
@@ -68,7 +72,7 @@ function containerLogs({
           container.remove().then(async () => {
             let screenshotUrls = [] as Array<any>
             try {
-              screenshotUrls = await uploadScreenshots(dir, testRunId)
+              screenshotUrls = await uploadScreenshots(dir, runId)
             } catch (e) {
               logger.error(`Failed to upload screenshots: ${e}`)
             }
@@ -102,7 +106,7 @@ function containerLogs({
 
 const run = async (job: Job, done: DoneCallback) => {
   // check to see if the folder exists
-  const dir = `testRun-${job.data.id}`
+  const dir = `run-${job.data.id}`
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir)
   }
@@ -123,7 +127,6 @@ const run = async (job: Job, done: DoneCallback) => {
       },
     },
     function (err: any, container: Container) {
-      console.error(err)
       container.attach(
         {
           stream: true,
@@ -137,7 +140,7 @@ const run = async (job: Job, done: DoneCallback) => {
 
           container.start({}, function (err, data) {
             console.error(err)
-            containerLogs({ container, dir, done, testRunId: job.data.id })
+            containerLogs({ container, dir, done, runId: job.data.id })
           })
         },
       )

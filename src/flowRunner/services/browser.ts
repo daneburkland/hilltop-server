@@ -9,9 +9,9 @@ interface IRun {
 
 export default class BrowserService {
   static async run({ code, id }: IRun) {
-    const logger = parentLogger.child({ testRunId: id })
+    const logger = parentLogger.child({ runId: id })
     try {
-      logger.info('Starting test run')
+      logger.info('Starting flow run')
       const browser = await puppeteer.launch({
         args: [
           // Required for Docker version of Puppeteer
@@ -45,11 +45,11 @@ export default class BrowserService {
       // const screenshots = await screenshotsHandler()
 
       // browser.close()
-      logger.info('Test run success')
+      logger.info('Flow run success')
 
       return { result }
     } catch (e) {
-      logger.error(`Test run error: ${e}`)
+      logger.error(`Flow run error: ${e}`)
       return { result: e }
     }
   }

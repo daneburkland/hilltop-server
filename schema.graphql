@@ -62,7 +62,6 @@ input LogWhereUniqueInput {
 }
 
 type Mutation {
-  createFlow(code: String!, title: String!): Flow!
   generateApiKey: GeneratedApiKey!
   inviteTeammate(email: String!): User!
   login(email: String!, name: String!): User!

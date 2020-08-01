@@ -3,11 +3,12 @@ const fs = require('fs')
 export const logger = require('pino')()
 const Docker = require('dockerode')
 const stream = require('stream')
-const AWS = require('aws-sdk')
+import * as AWS from 'aws-sdk'
 const del = require('del')
 
 import { Job, DoneCallback } from 'bull'
 import { Container } from 'dockerode'
+import { PutObjectRequest } from 'aws-sdk/clients/s3'
 
 const dockerode = new Docker()
 
@@ -16,14 +17,14 @@ const s3 = new AWS.S3({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 })
 
-async function uploadScreenshots(dir: any, runId: string) {
+async function uploadScreenshots(dir: string, runId: string) {
   const screenshotUrls = await Promise.all(
     fs
       .readdirSync(dir)
-      .filter((file) =>
+      .filter((file: string) =>
         ['.png', '.jpg'].includes(path.extname(file).toLowerCase()),
       )
-      .map(async (file) => {
+      .map(async (file: string) => {
         const data = await fs.readFileSync(`${dir}/${file}`)
         const params = {
           Bucket: process.env.S3_BUCKET,
@@ -32,7 +33,7 @@ async function uploadScreenshots(dir: any, runId: string) {
         }
         return new Promise(function (resolve, reject) {
           try {
-            s3.upload(params, function (err, data) {
+            s3.upload(params as PutObjectRequest, function (err, data) {
               if (err) {
                 reject(err)
               } else {
@@ -47,7 +48,7 @@ async function uploadScreenshots(dir: any, runId: string) {
       }),
   )
 
-  return screenshotUrls
+  return screenshotUrls.filter(Boolean)
 }
 
 function containerLogs({
@@ -97,9 +98,13 @@ function containerLogs({
         return logger.error(err.message)
       }
       container.modem.demuxStream(stream, logStream, logStream)
-      stream.on('end', function () {
-        logStream.end('!stop!')
-      })
+      if (stream) {
+        stream.on('end', function () {
+          logStream.end('!stop!')
+        })
+      } else {
+        logger.error('stream is not defined')
+      }
     },
   )
 }
@@ -135,11 +140,20 @@ const run = async (job: Job, done: DoneCallback) => {
           tty: true,
         },
         function (err, stream) {
-          console.error(err)
-          stream.pipe(process.stdout)
+          if (stream) {
+            stream.pipe(process.stdout)
+          } else {
+            logger.error(`stream is not defined`)
+          }
+
+          if (err) {
+            logger.error(err)
+          }
 
           container.start({}, function (err, data) {
-            console.error(err)
+            if (err) {
+              logger.error(err)
+            }
             containerLogs({ container, dir, done, runId: job.data.id })
           })
         },

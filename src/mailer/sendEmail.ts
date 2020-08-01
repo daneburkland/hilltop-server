@@ -27,7 +27,7 @@ const sendEmail = async (job: Job, done: DoneCallback) => {
   })
 
   try {
-    transporter.sendMail(mailOptions, (err, info) => {
+    transporter.sendMail(mailOptions, (err: Error, info: object) => {
       if (err) {
         logger.error(`Failed to send email ${err}`)
         done(err)

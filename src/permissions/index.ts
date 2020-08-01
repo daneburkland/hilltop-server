@@ -23,13 +23,13 @@ const rules = {
 
 export const permissions = shield({
   Query: {
-    myFlows: rules.isAuthenticatedUser,
-    flow: rules.isFlowOwner,
-    // TODO: should create a isTestRunOwner
-    flowRun: rules.isAuthenticatedUser,
+    // myFlows: rules.isAuthenticatedUser,
+    // flow: rules.isFlowOwner,
+    // // TODO: should create a isTestRunOwner
+    // flowRun: rules.isAuthenticatedUser,
   },
   Mutation: {
-    createFlow: rules.isAuthenticatedUser,
+    // createFlow: rules.isAuthenticatedUser,
     updateFlow: rules.isFlowOwner,
     generateApiKey: rules.isAuthenticatedUser,
   },

@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
     "outDir": "dist",
+    // https://github.com/graphql-nexus/nexus-plugin-prisma/issues/82
+    "skipLibCheck": true,
     "rootDir": "src",
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
     "strict": true
   },
   "include": ["src/**/*"]

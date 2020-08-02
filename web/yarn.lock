@@ -3714,9 +3714,9 @@ typescript@3.9.5:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.5.tgz#586f0dba300cde8be52dd1ac4f7e1009c1b13f36"
   integrity sha512-hSAifV3k+i6lEoCJ2k6R2Z/rp/H3+8sdmcn5NrS3/3kE7+RyZXm9aqvxWqjEXHAd8b0pShatpcdMTvEdvAJltQ==
 
-"undici@github:mcollina/undici":
+undici@mcollina/undici:
   version "1.2.6"
-  resolved "https://codeload.github.com/mcollina/undici/tar.gz/d3a1ee40c938781ac60f0a15314479449fab94c6"
+  resolved "https://codeload.github.com/mcollina/undici/tar.gz/7c1358f3e78defe0e803595124cb6089caa1059e"
 
 unique-string@^2.0.0:
   version "2.0.0"

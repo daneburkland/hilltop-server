@@ -1,0 +1,47 @@
+apiVersion: skaffold/v2beta6
+kind: Config
+
+deploy:
+  kubectl:
+    manifests:
+      - web/k8s/*
+      - mailer/k8s/*
+
+build:
+  artifacts:
+    - image: hilltop-server
+      context: web
+    - image: hilltop-mailer
+      context: mailer
+
+profiles:
+  - name: dev
+    activation:
+      - command: dev
+    build:
+      local:
+        push: false
+        useDockerCLI: true
+      artifacts:
+        - image: hilltop-server
+          context: web
+          docker:
+            buildArgs:
+              ENV: development
+          sync:
+            manual:
+              # Sync all the javascript files that are in the src folder
+              # with the container src folder
+              - src: "src/**/*.js"
+                dest: .
+        - image: hilltop-mailer
+          context: mailer
+          docker:
+            buildArgs:
+              ENV: development
+          sync:
+            manual:
+              # Sync all the javascript files that are in the src folder
+              # with the container src folder
+              - src: "src/**/*.js"
+                dest: .

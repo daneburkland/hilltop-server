@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailer
+spec:
+  ports:
+    - port: 4000
+  type: LoadBalancer
+  selector:
+    app: mailer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailer
+spec:
+  selector:
+    matchLabels:
+      app: mailer
+  template:
+    metadata:
+      labels:
+        app: mailer
+    spec:
+      containers:
+        - name: mailer
+          image: hilltop-mailer
+          ports:
+            - containerPort: 4000

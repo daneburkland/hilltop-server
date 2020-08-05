@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    // https://github.com/graphql-nexus/nexus-plugin-prisma/issues/82
+    "skipLibCheck": true,
+    "rootDir": "src",
+    "lib": ["esnext", "dom"],
+    "strict": true
+  },
+  "include": ["src/**/*", "src/keyfile.json"]
+}

@@ -6,6 +6,7 @@ deploy:
     manifests:
       - web/k8s/*
       - mailer/k8s/*
+      - flowlauncher/k8s/*
 
 build:
   artifacts:
@@ -13,6 +14,8 @@ build:
       context: web
     - image: hilltop-mailer
       context: mailer
+    - image: hilltop-flowlauncher
+      context: flowlauncher
 
 profiles:
   - name: dev
@@ -36,6 +39,17 @@ profiles:
                 dest: .
         - image: hilltop-mailer
           context: mailer
+          docker:
+            buildArgs:
+              ENV: development
+          sync:
+            manual:
+              # Sync all the javascript files that are in the src folder
+              # with the container src folder
+              - src: "src/**/*.js"
+                dest: .
+        - image: hilltop-flowlauncher
+          context: flowlauncher
           docker:
             buildArgs:
               ENV: development

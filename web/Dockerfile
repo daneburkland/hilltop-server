@@ -25,4 +25,5 @@ COPY ./dist .
 # RUN yarn flowLauncher
 
 EXPOSE 4000
+
 CMD [ "node", "dist/server" ]

@@ -64,13 +64,10 @@ export interface NexusGenRootTypes {
     prefix: string; // String!
   }
   Log: { // root type
-    hostname: string; // String!
     id: number; // Int!
-    level: number; // Int!
+    level: string; // String!
     msg: string; // String!
-    pid: number; // Int!
     stack?: string | null; // String
-    time: any; // DateTime!
   }
   Mutation: {};
   Query: {};
@@ -127,14 +124,11 @@ export interface NexusGenFieldTypes {
     prefix: string; // String!
   }
   Log: { // field return type
-    hostname: string; // String!
     id: number; // Int!
-    level: number; // Int!
+    level: string; // String!
     msg: string; // String!
-    pid: number; // Int!
     run: NexusGenRootTypes['FlowRun']; // FlowRun!
     stack: string | null; // String
-    time: any; // DateTime!
   }
   Mutation: { // field return type
     generateApiKey: NexusGenRootTypes['GeneratedApiKey']; // GeneratedApiKey!

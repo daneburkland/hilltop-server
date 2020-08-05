@@ -1,4 +1,6 @@
-FROM node:12
+FROM buildkite/puppeteer:latest
+
+RUN  apt-get update && apt-get install -y git
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -20,7 +22,8 @@ RUN yarn build
 
 COPY ./dist .
 
+
 # Bundle app source
 
-EXPOSE 6666
+EXPOSE 5000
 CMD [ "node", "dist/index" ]

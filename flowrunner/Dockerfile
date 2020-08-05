@@ -9,10 +9,12 @@ RUN  apt-get update && apt-get install -y git
 
 COPY . .
 
-EXPOSE 4000
+EXPOSE 6000
 
 # Install Puppeteer under /node_modules so it's available system-wide
 ADD package.json /
 RUN npm install
 
-CMD ["npm", "run", "flowRunner"]
+RUN npm run build
+
+CMD ["npm", "run", "start"]

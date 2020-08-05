@@ -1,6 +1,7 @@
 node_modules/
 dist/
 src/generated/
+**/secrets.yaml
 *.env*
 */.DS_Store
 .DS_Store

@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model FlowRun {
@@ -57,7 +57,7 @@ model Log {
   id    Int     @default(autoincrement()) @id
   run   FlowRun @relation(fields: [runId], references: [id])
   runId Int
-  level String
+  level Int
   msg   String
   stack String?
 }

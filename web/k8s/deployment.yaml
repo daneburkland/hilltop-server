@@ -27,3 +27,6 @@ spec:
           image: hilltop-server
           ports:
             - containerPort: 4000
+          env:
+            - name: REDIS_URL
+              value: redis://h:p393a70f1ea5a26afb1e6ab8ff54e768c708a40e8e3b929ec5cdb421b91943114@ec2-34-239-221-186.compute-1.amazonaws.com:7019

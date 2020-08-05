@@ -47,14 +47,11 @@ type GeneratedApiKey {
 }
 
 type Log {
-  hostname: String!
   id: Int!
-  level: Int!
+  level: String!
   msg: String!
-  pid: Int!
   run: FlowRun!
   stack: String
-  time: DateTime!
 }
 
 input LogWhereUniqueInput {

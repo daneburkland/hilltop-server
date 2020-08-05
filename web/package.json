@@ -1,5 +1,5 @@
 {
-  "name": "hilltop-server",
+  "name": "hilltop-web",
   "license": "MIT",
   "scripts": {
     "start": "node dist/server",
@@ -13,8 +13,7 @@
     "dev-api": "ts-node-dev --no-notify --respawn --transpileOnly src/api/server",
     "dev-flowLauncher": "ts-node-dev --no-notify --respawn --transpileOnly src/workers/flowLauncher",
     "flowLauncher": "node dist/workers/flowLauncher",
-    "mailer": "ts-node-dev --no-notify --respawn --transpileOnly src/mailer/",
-    "flowRunner": "ts-node-dev --no-notify --respawn --transpileOnly flowRunner/runTest | ts-node-dev flowRunner/logger"
+    "mailer": "ts-node-dev --no-notify --respawn --transpileOnly src/mailer/"
   },
   "dependencies": {
     "@nexus/schema": "^0.14.0",

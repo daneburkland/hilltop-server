@@ -31,7 +31,32 @@ export const Mutation = mutationType({
             },
           })
 
-          flowQueue.add({ id: flow.runs[0].id, code: flow.code })
+          const onDone = async function ({
+            result,
+            screenshotUrls,
+          }: {
+            result: any
+            screenshotUrls: Array<any>
+          }) {
+            await ctx.prisma.flowRun.update({
+              where: {
+                id,
+              },
+              data: {
+                result: JSON.stringify(result),
+                screenshotUrls: {
+                  set: screenshotUrls,
+                },
+              },
+            })
+          }
+
+          flowQueue.add({
+            id: flow.runs[0].id,
+            code: flow.code,
+            onDone,
+            foo: 'bar',
+          })
           return flow
         } catch (e) {
           logger.error(`Failed to create flow: ${e}`)

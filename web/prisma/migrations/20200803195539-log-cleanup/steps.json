@@ -1,0 +1,20 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "DeleteField",
+      "model": "Log",
+      "field": "time"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Log",
+      "field": "pid"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Log",
+      "field": "hostname"
+    }
+  ]
+}

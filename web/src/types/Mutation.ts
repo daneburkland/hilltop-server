@@ -1,5 +1,6 @@
 import { intArg, mutationType, stringArg, booleanArg } from '@nexus/schema'
 import { getUser } from '../utils'
+import { prismaStraegy } from 'nexus-plugin-prisma/dist/schema/pagination/prisma'
 // import { createFlowMutation } from './api/Mutation'
 const Queue = require('bull')
 const logger = require('pino')()
@@ -95,7 +96,27 @@ export const Mutation = mutationType({
 
         try {
           if (run) {
-            flowQueue.add({ id: flow.runs[0].id, code: flow.code })
+            const id = flow.runs[0].id
+            const onDone = async function ({
+              result,
+              screenshotUrls,
+            }: {
+              result: any
+              screenshotUrls: Array<any>
+            }) {
+              await ctx.prisma.flowRun.update({
+                where: {
+                  id,
+                },
+                data: {
+                  result: JSON.stringify(result),
+                  screenshotUrls: {
+                    set: screenshotUrls,
+                  },
+                },
+              })
+            }
+            flowQueue.add({ id, code: flow.code, onDone, foo: 'bar' })
           }
         } catch (e) {
           logger.error(e)

@@ -1,14 +1,10 @@
 apiVersion: skaffold/v2beta6
 kind: Config
 
-deploy:
-  kubectl:
-    manifests:
-      - web/k8s/*
-      - mailer/k8s/*
-      - flowlauncher/k8s/*
-
 build:
+  local:
+    push: false
+    useDockerCLI: true
   artifacts:
     - image: hilltop-server
       context: web
@@ -16,6 +12,18 @@ build:
       context: mailer
     - image: hilltop-flowlauncher
       context: flowlauncher
+    - image: hilltop-api
+      context: web
+      docker:
+        dockerfile: /src/api/Dockerfile
+
+deploy:
+  kubectl:
+    manifests:
+      - web/k8s/*
+      - mailer/k8s/*
+      - flowlauncher/k8s/*
+      - redis/k8s/*
 
 profiles:
   - name: dev
@@ -59,3 +67,7 @@ profiles:
               # with the container src folder
               - src: "src/**/*.js"
                 dest: .
+        - image: hilltop-api
+          context: web
+          docker:
+            dockerfile: /src/api/Dockerfile

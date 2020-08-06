@@ -17,6 +17,8 @@ const FlowRunOrderByInput = inputObjectType({
 
 export const Query = queryType({
   definition(t) {
+    t.crud.flows()
+    t.crud.flowRuns()
     t.list.field('myFlows', {
       type: 'Flow',
       args: {

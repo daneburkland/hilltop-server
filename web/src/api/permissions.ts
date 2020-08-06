@@ -42,6 +42,6 @@ export const permissions = shield({
     flowRun: rules.isFlowRunOwner,
   },
   Mutation: {
-    createFlow: rules.isAuthenticatedUser,
+    // createFlow: rules.isAuthenticatedUser,
   },
 })

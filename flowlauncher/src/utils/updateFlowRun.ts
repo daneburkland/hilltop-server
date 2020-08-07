@@ -26,6 +26,7 @@ export default async function updateFlowRun(result: JobResult, id: number) {
       `UPDATE "FlowRun" SET result = ($1), "screenshotUrls" = ($2) WHERE id=($3)`,
       [JSON.stringify(result.result), result.screenshotUrls, id],
     )
+    await client.end()
     logger.info(`Updated flowRun successfully`)
   } catch (e) {
     logger.error(e)

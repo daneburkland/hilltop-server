@@ -63,6 +63,7 @@ type Mutation {
   inviteTeammate(email: String!): User!
   login(email: String!, name: String!): User!
   updateFlow(code: String!, id: Int!, run: Boolean, title: String!): Flow!
+  webhook(onCreate: Boolean!, onExecute: Boolean!, resource: String!, url: String!): Webhook!
 }
 
 type Query {
@@ -89,4 +90,12 @@ type User {
 input UserWhereUniqueInput {
   email: String
   id: String
+}
+
+type Webhook {
+  id: Int!
+  onCreate: Boolean!
+  onExecute: Boolean!
+  resource: String!
+  url: String!
 }

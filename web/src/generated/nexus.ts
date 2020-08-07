@@ -80,6 +80,13 @@ export interface NexusGenRootTypes {
     id: string; // String!
     name: string; // String!
   }
+  Webhook: { // root type
+    id: number; // Int!
+    onCreate: boolean; // Boolean!
+    onExecute: boolean; // Boolean!
+    resource: string; // String!
+    url: string; // String!
+  }
   String: string;
   Int: number;
   Float: number;
@@ -135,6 +142,7 @@ export interface NexusGenFieldTypes {
     inviteTeammate: NexusGenRootTypes['User']; // User!
     login: NexusGenRootTypes['User']; // User!
     updateFlow: NexusGenRootTypes['Flow']; // Flow!
+    webhook: NexusGenRootTypes['Webhook']; // Webhook!
   }
   Query: { // field return type
     flow: NexusGenRootTypes['Flow']; // Flow!
@@ -153,6 +161,13 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     name: string; // String!
     team: NexusGenRootTypes['Team']; // Team!
+  }
+  Webhook: { // field return type
+    id: number; // Int!
+    onCreate: boolean; // Boolean!
+    onExecute: boolean; // Boolean!
+    resource: string; // String!
+    url: string; // String!
   }
 }
 
@@ -187,6 +202,12 @@ export interface NexusGenArgTypes {
       run?: boolean | null; // Boolean
       title: string; // String!
     }
+    webhook: { // args
+      onCreate: boolean; // Boolean!
+      onExecute: boolean; // Boolean!
+      resource: string; // String!
+      url: string; // String!
+    }
   }
   Query: {
     flow: { // args
@@ -218,7 +239,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "ApiKey" | "Flow" | "FlowRun" | "GeneratedApiKey" | "Log" | "Mutation" | "Query" | "Team" | "User";
+export type NexusGenObjectNames = "ApiKey" | "Flow" | "FlowRun" | "GeneratedApiKey" | "Log" | "Mutation" | "Query" | "Team" | "User" | "Webhook";
 
 export type NexusGenInputNames = "FlowOrderByInput" | "FlowRunOrderByInput" | "FlowRunWhereUniqueInput" | "LogWhereUniqueInput" | "UserWhereUniqueInput";
 

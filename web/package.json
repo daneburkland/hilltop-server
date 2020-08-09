@@ -10,10 +10,9 @@
     "generate": "yarn generate:prisma && yarn generate:nexus",
     "postinstall": "yarn generate",
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server",
-    "dev-api": "ts-node-dev --no-notify --respawn --transpileOnly src/api/server",
-    "dev-flowLauncher": "ts-node-dev --no-notify --respawn --transpileOnly src/workers/flowLauncher",
-    "flowLauncher": "node dist/workers/flowLauncher",
-    "mailer": "ts-node-dev --no-notify --respawn --transpileOnly src/mailer/"
+    "migrate-save": "prisma migrate save --experimental",
+    "migrate-up": "prisma migrate up --experimental",
+    "studio": "prisma studio --experimental"
   },
   "dependencies": {
     "@nexus/schema": "^0.14.0",
@@ -33,7 +32,7 @@
     "graphql-yoga": "^1.18.3",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.8.1",
-    "nexus-plugin-prisma": "^0.16.1",
+    "nexus-plugin-prisma": "^0.17.0",
     "node-fetch": "^2.6.0",
     "nodemailer": "^6.4.10",
     "pg": "^8.3.0",

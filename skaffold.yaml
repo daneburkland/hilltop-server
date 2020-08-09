@@ -3,16 +3,15 @@ kind: Config
 
 build:
   local:
-    push: false
     useDockerCLI: true
   artifacts:
-    - image: hilltop-server
+    - image: gcr.io/hilltop-285223/hilltop-web
       context: web
-    - image: hilltop-mailer
+    - image: gcr.io/hilltop-285223/hilltop-mailer
       context: mailer
-    - image: hilltop-flowlauncher
+    - image: gcr.io/hilltop-285223/hilltop-flowlauncher
       context: flowlauncher
-    - image: hilltop-api
+    - image: gcr.io/hilltop-285223/hilltop-api
       context: web
       docker:
         dockerfile: /src/api/Dockerfile
@@ -24,50 +23,41 @@ deploy:
       - mailer/k8s/*
       - flowlauncher/k8s/*
       - redis/k8s/*
+      - postgres/k8s/prod/*
 
 profiles:
   - name: dev
     activation:
       - command: dev
+    deploy:
+      kubectl:
+        manifests:
+          - postgres/k8s/dev/*
+          - web/k8s/*
+          - mailer/k8s/*
+          - flowlauncher/k8s/*
+          - redis/k8s/*
     build:
       local:
         push: false
         useDockerCLI: true
       artifacts:
-        - image: hilltop-server
+        - image: gcr.io/hilltop-285223/hilltop-web
           context: web
           docker:
             buildArgs:
               ENV: development
-          sync:
-            manual:
-              # Sync all the javascript files that are in the src folder
-              # with the container src folder
-              - src: "src/**/*.js"
-                dest: .
-        - image: hilltop-mailer
+        - image: gcr.io/hilltop-285223/hilltop-mailer
           context: mailer
           docker:
             buildArgs:
               ENV: development
-          sync:
-            manual:
-              # Sync all the javascript files that are in the src folder
-              # with the container src folder
-              - src: "src/**/*.js"
-                dest: .
-        - image: hilltop-flowlauncher
+        - image: gcr.io/hilltop-285223/hilltop-flowlauncher
           context: flowlauncher
           docker:
             buildArgs:
               ENV: development
-          sync:
-            manual:
-              # Sync all the javascript files that are in the src folder
-              # with the container src folder
-              - src: "src/**/*.js"
-                dest: .
-        - image: hilltop-api
+        - image: gcr.io/hilltop-285223/hilltop-api
           context: web
           docker:
             dockerfile: /src/api/Dockerfile

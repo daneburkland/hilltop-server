@@ -1,3 +1,4 @@
+const logger = require('pino')()
 import { queryType, inputObjectType, arg, intArg } from '@nexus/schema'
 // import {
 //   myFlowQuery,

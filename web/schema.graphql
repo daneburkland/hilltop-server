@@ -59,11 +59,11 @@ input LogWhereUniqueInput {
 }
 
 type Mutation {
+  createWebhook(onCreate: Boolean!, onExecute: Boolean!, resource: String!, url: String!): Webhook!
   generateApiKey: GeneratedApiKey!
   inviteTeammate(email: String!): User!
   login(email: String!, name: String!): User!
   updateFlow(code: String!, id: Int!, run: Boolean, title: String!): Flow!
-  webhook(onCreate: Boolean!, onExecute: Boolean!, resource: String!, url: String!): Webhook!
 }
 
 type Query {

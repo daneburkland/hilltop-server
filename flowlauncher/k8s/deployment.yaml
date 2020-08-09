@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: flowlauncher
-          image: hilltop-flowlauncher
+          image: gcr.io/hilltop-285223/hilltop-flowlauncher
           ports:
             - containerPort: 5000
           resources:
@@ -40,7 +40,7 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: flowlaunch-secrets
+                  name: postgres-credentials
                   key: database_url
             - name: AWS_ACCESS_KEY
               valueFrom:

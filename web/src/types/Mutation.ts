@@ -1,6 +1,5 @@
 import { intArg, mutationType, stringArg, booleanArg } from '@nexus/schema'
 import { getUser } from '../utils'
-import { prismaStraegy } from 'nexus-plugin-prisma/dist/schema/pagination/prisma'
 // import { createFlowMutation } from './api/Mutation'
 const Queue = require('bull')
 const logger = require('pino')()
@@ -21,7 +20,7 @@ export const Mutation = mutationType({
         const userData = await getUser(ctx)
         const { id } = userData
         const user = await ctx.prisma.user.upsert({
-          where: { id: id },
+          where: { id },
           create: {
             id,
             name,

@@ -138,11 +138,11 @@ export interface NexusGenFieldTypes {
     stack: string | null; // String
   }
   Mutation: { // field return type
+    createWebhook: NexusGenRootTypes['Webhook']; // Webhook!
     generateApiKey: NexusGenRootTypes['GeneratedApiKey']; // GeneratedApiKey!
     inviteTeammate: NexusGenRootTypes['User']; // User!
     login: NexusGenRootTypes['User']; // User!
     updateFlow: NexusGenRootTypes['Flow']; // Flow!
-    webhook: NexusGenRootTypes['Webhook']; // Webhook!
   }
   Query: { // field return type
     flow: NexusGenRootTypes['Flow']; // Flow!
@@ -189,6 +189,12 @@ export interface NexusGenArgTypes {
     }
   }
   Mutation: {
+    createWebhook: { // args
+      onCreate: boolean; // Boolean!
+      onExecute: boolean; // Boolean!
+      resource: string; // String!
+      url: string; // String!
+    }
     inviteTeammate: { // args
       email: string; // String!
     }
@@ -201,12 +207,6 @@ export interface NexusGenArgTypes {
       id: number; // Int!
       run?: boolean | null; // Boolean
       title: string; // String!
-    }
-    webhook: { // args
-      onCreate: boolean; // Boolean!
-      onExecute: boolean; // Boolean!
-      resource: string; // String!
-      url: string; // String!
     }
   }
   Query: {

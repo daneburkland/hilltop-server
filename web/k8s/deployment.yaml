@@ -24,10 +24,20 @@ spec:
     spec:
       containers:
         - name: web
-          image: hilltop-server
+          image: gcr.io/hilltop-285223/hilltop-web
           ports:
             - containerPort: 4000
           env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: password
             - name: REDIS_URL
               valueFrom:
                 secretKeyRef:
@@ -36,7 +46,7 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: web-secrets
+                  name: postgres-credentials
                   key: database_url
             - name: AWS_ACCESS_KEY
               valueFrom:
@@ -90,7 +100,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: hilltop-api
+          image: gcr.io/hilltop-285223/hilltop-api
           ports:
             - containerPort: 7777
           env:

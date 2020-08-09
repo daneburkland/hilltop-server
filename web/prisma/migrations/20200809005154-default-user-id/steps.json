@@ -1,0 +1,48 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "externalId"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "User",
+      "field": "id",
+      "type": "String"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "newValue": "uuid()"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "ApiKey",
+      "field": "userId",
+      "type": "String"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "Flow",
+      "field": "authorId",
+      "type": "String"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "Webhook",
+      "field": "userId",
+      "type": "String"
+    }
+  ]
+}

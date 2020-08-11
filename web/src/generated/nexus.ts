@@ -138,6 +138,7 @@ export interface NexusGenFieldTypes {
     stack: string | null; // String
   }
   Mutation: { // field return type
+    createFlow: NexusGenRootTypes['Flow']; // Flow!
     createWebhook: NexusGenRootTypes['Webhook']; // Webhook!
     generateApiKey: NexusGenRootTypes['GeneratedApiKey']; // GeneratedApiKey!
     inviteTeammate: NexusGenRootTypes['User']; // User!
@@ -189,6 +190,10 @@ export interface NexusGenArgTypes {
     }
   }
   Mutation: {
+    createFlow: { // args
+      code: string; // String!
+      title: string; // String!
+    }
     createWebhook: { // args
       onCreate: boolean; // Boolean!
       onExecute: boolean; // Boolean!

@@ -28,9 +28,18 @@ spec:
           ports:
             - containerPort: 6666
           env:
-            - name: AWS_ACCESS_KEY
-              value: AKIAZNFWS7JQWWXGVLFK
             - name: REDIS_URL
-              value: redis://h:p393a70f1ea5a26afb1e6ab8ff54e768c708a40e8e3b929ec5cdb421b91943114@ec2-34-239-221-186.compute-1.amazonaws.com:7019
+              valueFrom:
+                secretKeyRef:
+                  name: web-secrets
+                  key: redis_url
+            - name: AWS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: web-secrets
+                  key: aws_access_key
             - name: AWS_SECRET_ACCESS_KEY
-              value: cV03fjelSLEBJNvgNeVgjbe3KyIYZAl7YLpDTVzN
+              valueFrom:
+                secretKeyRef:
+                  name: web-secrets
+                  key: aws_secret_access_key

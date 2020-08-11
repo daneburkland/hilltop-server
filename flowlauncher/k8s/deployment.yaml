@@ -35,7 +35,7 @@ spec:
             - name: REDIS_URL
               valueFrom:
                 secretKeyRef:
-                  name: flowlaunch-secrets
+                  name: web-secrets
                   key: redis_url
             - name: DATABASE_URL
               valueFrom:
@@ -45,15 +45,15 @@ spec:
             - name: AWS_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: flowlaunch-secrets
+                  name: web-secrets
                   key: aws_access_key
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: flowlaunch-secrets
+                  name: web-secrets
                   key: aws_secret_access_key
             - name: S3_BUCKET
               valueFrom:
                 secretKeyRef:
-                  name: flowlaunch-secrets
+                  name: web-secrets
                   key: s3_bucket

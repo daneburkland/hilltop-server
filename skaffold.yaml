@@ -22,7 +22,6 @@ deploy:
       - web/k8s/*
       - mailer/k8s/*
       - flowlauncher/k8s/*
-      - redis/k8s/*
       - postgres/k8s/prod/*
 
 profiles:
@@ -36,7 +35,6 @@ profiles:
           - web/k8s/*
           - mailer/k8s/*
           - flowlauncher/k8s/*
-          - redis/k8s/*
     build:
       local:
         push: false

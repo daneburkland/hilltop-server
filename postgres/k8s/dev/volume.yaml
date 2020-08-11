@@ -3,13 +3,26 @@ kind: PersistentVolume
 metadata:
   name: postgres-pv
   labels:
-    name: postgres-pv
     type: local
 spec:
+  storageClassName: manual
   capacity:
     storage: 5Gi
-  storageClassName: manual
   accessModes:
     - ReadWriteOnce
   hostPath:
     path: "/mnt/data"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: postgres
+  name: postgres-pvc
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

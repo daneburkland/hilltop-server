@@ -59,6 +59,7 @@ input LogWhereUniqueInput {
 }
 
 type Mutation {
+  createFlow(code: String!, title: String!): Flow!
   createWebhook(onCreate: Boolean!, onExecute: Boolean!, resource: String!, url: String!): Webhook!
   generateApiKey: GeneratedApiKey!
   inviteTeammate(email: String!): User!

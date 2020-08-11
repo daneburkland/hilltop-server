@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  labels:
-    name: database
 spec:
   replicas: 1
   selector:
@@ -13,12 +11,13 @@ spec:
     metadata:
       labels:
         service: postgres
+        app: postgres
     spec:
       containers:
         - name: postgres
           image: postgres:12-alpine
           volumeMounts:
-            - name: postgres-volume-mount
+            - name: postgres-pvc
               mountPath: /var/lib/postgresql/data
           env:
             - name: POSTGRES_USER
@@ -31,8 +30,7 @@ spec:
                 secretKeyRef:
                   name: postgres-credentials
                   key: password
-      restartPolicy: Always
       volumes:
-        - name: postgres-volume-mount
+        - name: postgres-pvc
           persistentVolumeClaim:
             claimName: postgres-pvc

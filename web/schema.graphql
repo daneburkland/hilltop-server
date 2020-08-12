@@ -10,6 +10,17 @@ type ApiKey {
 
 scalar DateTime
 
+type Event {
+  id: Int!
+  noun: Noun!
+  verb: Verb!
+  webhook: Webhook
+}
+
+input EventWhereUniqueInput {
+  id: Int
+}
+
 type Flow {
   author: User!
   code: String!
@@ -67,6 +78,10 @@ type Mutation {
   updateFlow(code: String!, id: Int!, run: Boolean, title: String!): Flow!
 }
 
+enum Noun {
+  Flow
+}
+
 type Query {
   flow(id: Int): Flow!
   flowRun(id: Int): FlowRun!
@@ -93,10 +108,17 @@ input UserWhereUniqueInput {
   id: String
 }
 
+enum Verb {
+  created
+  errored
+  executed
+  updated
+}
+
 type Webhook {
+  events(after: EventWhereUniqueInput, before: EventWhereUniqueInput, first: Int, last: Int): [Event!]!
   id: Int!
-  onCreate: Boolean!
-  onExecute: Boolean!
+  owner: Team!
   resource: String!
   url: String!
 }

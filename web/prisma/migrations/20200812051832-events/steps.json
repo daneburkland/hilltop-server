@@ -1,0 +1,203 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateEnum",
+      "enum": "Noun",
+      "values": [
+        "Flow"
+      ]
+    },
+    {
+      "tag": "CreateEnum",
+      "enum": "Verb",
+      "values": [
+        "created",
+        "updated",
+        "executed",
+        "errored"
+      ]
+    },
+    {
+      "tag": "CreateModel",
+      "model": "Event"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Event",
+      "field": "noun",
+      "type": "Noun",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Event",
+          "field": "noun"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Event",
+          "field": "noun"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "Flow"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Event",
+      "field": "verb",
+      "type": "Verb",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Event",
+      "field": "webhooks",
+      "type": "Webhook",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "Event"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Model",
+          "model": "Event"
+        },
+        "directive": "id"
+      },
+      "argument": "",
+      "value": "[noun, verb]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "webhooks",
+      "type": "Webhook",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "webhook"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Webhook",
+      "field": "event",
+      "type": "Event",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Webhook",
+          "field": "event"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Webhook",
+          "field": "event"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[eventNoun, eventVerb]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Webhook",
+          "field": "event"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[noun, verb]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Webhook",
+      "field": "ownerId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Webhook",
+      "field": "eventNoun",
+      "type": "Noun",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Webhook",
+      "field": "eventVerb",
+      "type": "Verb",
+      "arity": "Required"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Webhook",
+      "field": "onCreate"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Webhook",
+      "field": "onExecute"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Webhook",
+      "field": "userId"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Webhook",
+          "field": "owner"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "newValue": "[ownerId]"
+    }
+  ]
+}

@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model FlowRun {
@@ -65,6 +65,7 @@ model Log {
 
 model Webhook {
   id        Int    @default(autoincrement()) @id
+  resource  String
   owner     User   @relation(fields: [ownerId], references: [id])
   event     Event  @relation(fields: [eventNoun, eventVerb], references: [noun, verb])
   ownerId   String

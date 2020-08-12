@@ -22,7 +22,6 @@ deploy:
       - web/k8s/*
       - mailer/k8s/*
       - flowlauncher/k8s/*
-      - postgres/k8s/prod/*
 
 profiles:
   - name: dev

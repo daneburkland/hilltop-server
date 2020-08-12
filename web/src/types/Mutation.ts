@@ -280,21 +280,20 @@ export const Mutation = mutationType({
     t.field('createWebhook', {
       type: 'Webhook',
       args: {
-        resource: stringArg({ nullable: false }),
-        onCreate: booleanArg({ nullable: false }),
-        onExecute: booleanArg({ nullable: false }),
+        verb: stringArg({ nullable: false }),
+        noun: stringArg({ nullable: false }),
         url: stringArg({ nullable: false }),
       },
-      resolve: async (_parent, { resource, onCreate, onExecute, url }, ctx) => {
+      resolve: async (_parent, { verb, noun, url }, ctx) => {
         const { id } = await getUser(ctx)
         if (!id) throw new Error('Count not authenticate user.')
 
         try {
           const webhook = await ctx.prisma.webhook.create({
             data: {
-              resource,
-              onCreate,
-              onExecute,
+              event: {
+                connect: { noun_verb: { verb, noun } },
+              },
               url,
               owner: { connect: { id } },
             },
@@ -302,7 +301,7 @@ export const Mutation = mutationType({
 
           return webhook
         } catch (e) {
-          logger.error(`Failed to update webhook: ${e}`)
+          logger.error(`Failed to create webhook: ${e}`)
         }
       },
     })

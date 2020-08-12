@@ -100,5 +100,19 @@ export const Query = queryType({
         return user
       },
     })
+    t.list.field('webhooks', {
+      type: 'Webhook',
+      resolve: async (_parent, _args, ctx) => {
+        const { id } = await getUser(ctx)
+        const webhooks = await ctx.prisma.webhook.findMany({
+          where: { ownerId: id },
+          include: {
+            event: true,
+          },
+        })
+
+        return webhooks
+      },
+    })
   },
 })

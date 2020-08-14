@@ -24,6 +24,7 @@ model Flow {
   title     String
   author    User      @relation(fields: [authorId], references: [id])
   authorId  String
+  // I think I can get rid of code here
   code      String
   runs      FlowRun[]
   createdAt DateTime  @default(now())

@@ -24,6 +24,6 @@ COPY ./dist .
 
 # RUN yarn flowLauncher
 
-EXPOSE 4000
+EXPOSE 8000
 
-CMD [ "node", "dist/server" ]
+CMD [ "node", "dist/webhook/server" ]

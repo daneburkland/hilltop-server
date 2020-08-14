@@ -4,18 +4,8 @@ import { getUser } from '../utils'
 const Queue = require('bull')
 const logger = require('pino')()
 
-let flowQueue = null as any
-try {
-  flowQueue = new Queue('flowQueue', process.env.REDIS_URL)
-} catch (e) {
-  logger.error(e)
-}
-let mailerQueue = null as any
-try {
-  mailerQueue = new Queue('mailerQueue', process.env.REDIS_URL)
-} catch (e) {
-  logger.error(e)
-}
+const flowQueue = new Queue('flowQueue', process.env.REDIS_URL)
+const mailerQueue = new Queue('mailerQueue', process.env.REDIS_URL)
 const crypto = require('crypto')
 const fetch = require('node-fetch')
 
@@ -85,7 +75,6 @@ export const Mutation = mutationType({
       },
       resolve: async (parent, { title, code }, ctx) => {
         const { id } = await getUser(ctx)
-        if (!id) throw new Error('Could not authenticate user.')
 
         try {
           const flow = await ctx.prisma.flow.create({
@@ -102,31 +91,11 @@ export const Mutation = mutationType({
             },
           })
 
-          const onDone = async function ({
-            result,
-            screenshotUrls,
-          }: {
-            result: any
-            screenshotUrls: Array<any>
-          }) {
-            await ctx.prisma.flowRun.update({
-              where: {
-                id,
-              },
-              data: {
-                result: JSON.stringify(result),
-                screenshotUrls: {
-                  set: screenshotUrls,
-                },
-              },
-            })
-          }
-
           try {
             await flowQueue.add({
               id: flow.runs[0].id,
               code: flow.code,
-              onDone,
+              ownerId: id,
             })
           } catch (e) {
             logger.error(e)
@@ -146,6 +115,7 @@ export const Mutation = mutationType({
         id: intArg({ nullable: false }),
       },
       resolve: async (parent, { title, code, run, id }, ctx) => {
+        const { id: userId } = await getUser(ctx)
         const flow = await ctx.prisma.flow.update({
           where: { id },
           data: {
@@ -166,28 +136,8 @@ export const Mutation = mutationType({
         try {
           if (run) {
             const id = flow.runs[0].id
-            const onDone = async function ({
-              result,
-              screenshotUrls,
-            }: {
-              result: any
-              screenshotUrls: Array<any>
-            }) {
-              await ctx.prisma.flowRun.update({
-                where: {
-                  id,
-                },
-                data: {
-                  result: JSON.stringify(result),
-                  screenshotUrls: {
-                    set: screenshotUrls,
-                  },
-                },
-              })
-            }
             try {
-              logger.info('before')
-              await flowQueue.add({ id, code: flow.code, onDone })
+              await flowQueue.add({ id, code: flow.code, ownerId: userId })
               logger.info('after')
             } catch (e) {
               logger.error(e)

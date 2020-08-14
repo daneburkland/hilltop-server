@@ -19,7 +19,9 @@ build:
 deploy:
   kubectl:
     manifests:
-      - web/k8s/*
+      - web/k8s/web/*
+      - web/k8s/api/*
+      - web/k8s/webhook/*
       - mailer/k8s/*
       - flowlauncher/k8s/*
 
@@ -31,7 +33,9 @@ profiles:
       kubectl:
         manifests:
           - postgres/k8s/dev/*
-          - web/k8s/*
+          - web/k8s/web/*
+          - web/k8s/webhook/*
+          # - web/k8s/api/*
           - mailer/k8s/*
           - flowlauncher/k8s/*
     build:
@@ -54,7 +58,11 @@ profiles:
           docker:
             buildArgs:
               ENV: development
-        - image: gcr.io/hilltop-285223/hilltop-api
+        # - image: gcr.io/hilltop-285223/hilltop-api
+        #   context: web
+        #   docker:
+        #     dockerfile: /src/api/Dockerfile
+        - image: gcr.io/hilltop-285223/hilltop-webhook
           context: web
           docker:
-            dockerfile: /src/api/Dockerfile
+            dockerfile: /src/webhook/Dockerfile

@@ -9,7 +9,7 @@ spec:
     storage: 50Gi
   storageClassName: standard
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   gcePersistentDisk:
     pdName: pg-data-disk
     fsType: ext4
@@ -22,7 +22,7 @@ metadata:
     type: local
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 50Gi

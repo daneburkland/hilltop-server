@@ -1,10 +1,11 @@
-// require('dotenv').config()
 const Queue = require('bull')
 import updateFlowRun from './utils/updateFlowRun'
 import launchFlow from './tasks/launchFlow'
 import { Job } from 'bull'
 import { JobResult } from './types'
 const logger = require('pino')()
+
+const webhookQueue = new Queue('webhookQueue', process.env.REDIS_URL)
 
 let flowQueue
 try {
@@ -25,6 +26,12 @@ try {
 try {
   flowQueue.on('completed', async (job: Job, jobResult: JobResult) => {
     await updateFlowRun(jobResult, job.data.id)
+    await webhookQueue.add({
+      verb: 'executed',
+      noun: 'Flow',
+      ...jobResult,
+      ...job.data,
+    })
     job.remove()
   })
 } catch (e) {

@@ -19,9 +19,6 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  EventWhereUniqueInput: { // input type
-    id?: number | null; // Int
-  }
   FlowOrderByInput: { // input type
     updatedAt?: string | null; // String
   }
@@ -38,6 +35,9 @@ export interface NexusGenInputs {
     email?: string | null; // String
     id?: string | null; // String
   }
+  WebhookWhereUniqueInput: { // input type
+    id?: number | null; // Int
+  }
 }
 
 export interface NexusGenEnums {
@@ -52,7 +52,6 @@ export interface NexusGenRootTypes {
     userId: string; // String!
   }
   Event: { // root type
-    id: number; // Int!
     noun: NexusGenEnums['Noun']; // Noun!
     verb: NexusGenEnums['Verb']; // Verb!
   }
@@ -92,7 +91,6 @@ export interface NexusGenRootTypes {
   }
   Webhook: { // root type
     id: number; // Int!
-    resource: string; // String!
     url: string; // String!
   }
   String: string;
@@ -104,12 +102,12 @@ export interface NexusGenRootTypes {
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
-  EventWhereUniqueInput: NexusGenInputs['EventWhereUniqueInput'];
   FlowOrderByInput: NexusGenInputs['FlowOrderByInput'];
   FlowRunOrderByInput: NexusGenInputs['FlowRunOrderByInput'];
   FlowRunWhereUniqueInput: NexusGenInputs['FlowRunWhereUniqueInput'];
   LogWhereUniqueInput: NexusGenInputs['LogWhereUniqueInput'];
   UserWhereUniqueInput: NexusGenInputs['UserWhereUniqueInput'];
+  WebhookWhereUniqueInput: NexusGenInputs['WebhookWhereUniqueInput'];
   Noun: NexusGenEnums['Noun'];
   Verb: NexusGenEnums['Verb'];
 }
@@ -121,10 +119,9 @@ export interface NexusGenFieldTypes {
     userId: string; // String!
   }
   Event: { // field return type
-    id: number; // Int!
     noun: NexusGenEnums['Noun']; // Noun!
     verb: NexusGenEnums['Verb']; // Verb!
-    webhook: NexusGenRootTypes['Webhook'] | null; // Webhook
+    webhooks: NexusGenRootTypes['Webhook'][]; // [Webhook!]!
   }
   Flow: { // field return type
     author: NexusGenRootTypes['User']; // User!
@@ -168,6 +165,7 @@ export interface NexusGenFieldTypes {
     flowRuns: NexusGenRootTypes['FlowRun'][]; // [FlowRun!]!
     myFlows: NexusGenRootTypes['Flow'][]; // [Flow!]!
     user: NexusGenRootTypes['User']; // User!
+    webhooks: NexusGenRootTypes['Webhook'][]; // [Webhook!]!
   }
   Team: { // field return type
     id: number; // Int!
@@ -181,15 +179,22 @@ export interface NexusGenFieldTypes {
     team: NexusGenRootTypes['Team']; // Team!
   }
   Webhook: { // field return type
-    events: NexusGenRootTypes['Event'][]; // [Event!]!
+    event: NexusGenRootTypes['Event']; // Event!
     id: number; // Int!
-    owner: NexusGenRootTypes['Team']; // Team!
-    resource: string; // String!
+    owner: NexusGenRootTypes['User']; // User!
     url: string; // String!
   }
 }
 
 export interface NexusGenArgTypes {
+  Event: {
+    webhooks: { // args
+      after?: NexusGenInputs['WebhookWhereUniqueInput'] | null; // WebhookWhereUniqueInput
+      before?: NexusGenInputs['WebhookWhereUniqueInput'] | null; // WebhookWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+    }
+  }
   Flow: {
     runs: { // args
       after?: NexusGenInputs['FlowRunWhereUniqueInput'] | null; // FlowRunWhereUniqueInput
@@ -212,10 +217,9 @@ export interface NexusGenArgTypes {
       title: string; // String!
     }
     createWebhook: { // args
-      onCreate: boolean; // Boolean!
-      onExecute: boolean; // Boolean!
-      resource: string; // String!
+      noun: string; // String!
       url: string; // String!
+      verb: string; // String!
     }
     inviteTeammate: { // args
       email: string; // String!
@@ -254,14 +258,6 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
     }
   }
-  Webhook: {
-    events: { // args
-      after?: NexusGenInputs['EventWhereUniqueInput'] | null; // EventWhereUniqueInput
-      before?: NexusGenInputs['EventWhereUniqueInput'] | null; // EventWhereUniqueInput
-      first?: number | null; // Int
-      last?: number | null; // Int
-    }
-  }
 }
 
 export interface NexusGenAbstractResolveReturnTypes {
@@ -271,7 +267,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "ApiKey" | "Event" | "Flow" | "FlowRun" | "GeneratedApiKey" | "Log" | "Mutation" | "Query" | "Team" | "User" | "Webhook";
 
-export type NexusGenInputNames = "EventWhereUniqueInput" | "FlowOrderByInput" | "FlowRunOrderByInput" | "FlowRunWhereUniqueInput" | "LogWhereUniqueInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "FlowOrderByInput" | "FlowRunOrderByInput" | "FlowRunWhereUniqueInput" | "LogWhereUniqueInput" | "UserWhereUniqueInput" | "WebhookWhereUniqueInput";
 
 export type NexusGenEnumNames = "Noun" | "Verb";
 

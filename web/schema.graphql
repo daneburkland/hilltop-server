@@ -11,14 +11,9 @@ type ApiKey {
 scalar DateTime
 
 type Event {
-  id: Int!
   noun: Noun!
   verb: Verb!
-  webhook: Webhook
-}
-
-input EventWhereUniqueInput {
-  id: Int
+  webhooks(after: WebhookWhereUniqueInput, before: WebhookWhereUniqueInput, first: Int, last: Int): [Webhook!]!
 }
 
 type Flow {
@@ -71,7 +66,7 @@ input LogWhereUniqueInput {
 
 type Mutation {
   createFlow(code: String!, title: String!): Flow!
-  createWebhook(onCreate: Boolean!, onExecute: Boolean!, resource: String!, url: String!): Webhook!
+  createWebhook(noun: String!, url: String!, verb: String!): Webhook!
   generateApiKey: GeneratedApiKey!
   inviteTeammate(email: String!): User!
   login(email: String!, name: String!): User!
@@ -88,6 +83,7 @@ type Query {
   flowRuns(id: Int, orderBy: FlowRunOrderByInput): [FlowRun!]!
   myFlows(orderBy: FlowOrderByInput): [Flow!]!
   user: User!
+  webhooks: [Webhook!]!
 }
 
 type Team {
@@ -116,9 +112,12 @@ enum Verb {
 }
 
 type Webhook {
-  events(after: EventWhereUniqueInput, before: EventWhereUniqueInput, first: Int, last: Int): [Event!]!
+  event: Event!
   id: Int!
-  owner: Team!
-  resource: String!
+  owner: User!
   url: String!
+}
+
+input WebhookWhereUniqueInput {
+  id: Int
 }

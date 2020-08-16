@@ -11,6 +11,8 @@ build:
       context: mailer
     - image: gcr.io/hilltop-285223/hilltop-flowlauncher
       context: flowlauncher
+    - image: gcr.io/hilltop-285223/hilltop-rest-api
+      context: rest-api
     - image: gcr.io/hilltop-285223/hilltop-api
       context: web
       docker:
@@ -38,6 +40,7 @@ profiles:
           # - web/k8s/api/*
           - mailer/k8s/*
           - flowlauncher/k8s/*
+          - rest-api/k8s/*
     build:
       local:
         push: false
@@ -48,6 +51,10 @@ profiles:
           docker:
             buildArgs:
               ENV: development
+        - image: gcr.io/hilltop-285223/hilltop-rest-api
+          context: ./
+          docker:
+            dockerfile: /rest-api/Dockerfile
         - image: gcr.io/hilltop-285223/hilltop-mailer
           context: mailer
           docker:

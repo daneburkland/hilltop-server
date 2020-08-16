@@ -5,7 +5,8 @@
     "skipLibCheck": true,
     "rootDir": "src",
     "lib": ["esnext", "dom"],
-    "strict": true
+    "strict": true,
+    "esModuleInterop": true
   },
   "include": ["src/**/*"]
 }

@@ -31,6 +31,13 @@ export interface NexusGenInputs {
   LogWhereUniqueInput: { // input type
     id?: number | null; // Int
   }
+  RepeatOptionsInput: { // input type
+    cron?: string | null; // String
+    every?: string | null; // String
+    flow?: string | null; // String
+    limit?: string | null; // String
+    tz?: string | null; // String
+  }
   UserWhereUniqueInput: { // input type
     email?: string | null; // String
     id?: string | null; // String
@@ -42,7 +49,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   Noun: "Flow"
-  Verb: "created" | "errored" | "executed" | "updated"
+  Verb: "errored" | "executed"
 }
 
 export interface NexusGenRootTypes {
@@ -80,6 +87,14 @@ export interface NexusGenRootTypes {
   }
   Mutation: {};
   Query: {};
+  RepeatOptions: { // root type
+    cron?: string | null; // String
+    every?: number | null; // Int
+    id: number; // Int!
+    jobId: number; // Int!
+    limit?: number | null; // Int
+    tz?: string | null; // String
+  }
   Team: { // root type
     id: number; // Int!
     name: string; // String!
@@ -106,6 +121,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   FlowRunOrderByInput: NexusGenInputs['FlowRunOrderByInput'];
   FlowRunWhereUniqueInput: NexusGenInputs['FlowRunWhereUniqueInput'];
   LogWhereUniqueInput: NexusGenInputs['LogWhereUniqueInput'];
+  RepeatOptionsInput: NexusGenInputs['RepeatOptionsInput'];
   UserWhereUniqueInput: NexusGenInputs['UserWhereUniqueInput'];
   WebhookWhereUniqueInput: NexusGenInputs['WebhookWhereUniqueInput'];
   Noun: NexusGenEnums['Noun'];
@@ -154,6 +170,7 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     createFlow: NexusGenRootTypes['Flow']; // Flow!
     createWebhook: NexusGenRootTypes['Webhook']; // Webhook!
+    deleteWebhook: NexusGenRootTypes['Webhook']; // Webhook!
     generateApiKey: NexusGenRootTypes['GeneratedApiKey']; // GeneratedApiKey!
     inviteTeammate: NexusGenRootTypes['User']; // User!
     login: NexusGenRootTypes['User']; // User!
@@ -166,6 +183,15 @@ export interface NexusGenFieldTypes {
     myFlows: NexusGenRootTypes['Flow'][]; // [Flow!]!
     user: NexusGenRootTypes['User']; // User!
     webhooks: NexusGenRootTypes['Webhook'][]; // [Webhook!]!
+  }
+  RepeatOptions: { // field return type
+    cron: string | null; // String
+    every: number | null; // Int
+    flow: NexusGenRootTypes['Flow']; // Flow!
+    id: number; // Int!
+    jobId: number; // Int!
+    limit: number | null; // Int
+    tz: string | null; // String
   }
   Team: { // field return type
     id: number; // Int!
@@ -221,6 +247,9 @@ export interface NexusGenArgTypes {
       url: string; // String!
       verb: string; // String!
     }
+    deleteWebhook: { // args
+      id: number; // Int!
+    }
     inviteTeammate: { // args
       email: string; // String!
     }
@@ -231,6 +260,7 @@ export interface NexusGenArgTypes {
     updateFlow: { // args
       code: string; // String!
       id: number; // Int!
+      repeatOptions?: NexusGenInputs['RepeatOptionsInput'] | null; // RepeatOptionsInput
       run?: boolean | null; // Boolean
       title: string; // String!
     }
@@ -265,9 +295,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "ApiKey" | "Event" | "Flow" | "FlowRun" | "GeneratedApiKey" | "Log" | "Mutation" | "Query" | "Team" | "User" | "Webhook";
+export type NexusGenObjectNames = "ApiKey" | "Event" | "Flow" | "FlowRun" | "GeneratedApiKey" | "Log" | "Mutation" | "Query" | "RepeatOptions" | "Team" | "User" | "Webhook";
 
-export type NexusGenInputNames = "FlowOrderByInput" | "FlowRunOrderByInput" | "FlowRunWhereUniqueInput" | "LogWhereUniqueInput" | "UserWhereUniqueInput" | "WebhookWhereUniqueInput";
+export type NexusGenInputNames = "FlowOrderByInput" | "FlowRunOrderByInput" | "FlowRunWhereUniqueInput" | "LogWhereUniqueInput" | "RepeatOptionsInput" | "UserWhereUniqueInput" | "WebhookWhereUniqueInput";
 
 export type NexusGenEnumNames = "Noun" | "Verb";
 

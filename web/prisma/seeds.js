@@ -3,13 +3,6 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 const main = async () => {
-  const flowCreated = await prisma.event.create({
-    data: {
-      noun: 'Flow',
-      verb: 'created',
-    },
-  })
-
   const flowExecuted = await prisma.event.create({
     data: {
       noun: 'Flow',
@@ -24,7 +17,7 @@ const main = async () => {
     },
   })
 
-  console.log(flowCreated, flowExecuted, flowErrored)
+  console.log(flowExecuted, flowErrored)
 }
 
 main()

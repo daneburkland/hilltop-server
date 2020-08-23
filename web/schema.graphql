@@ -67,10 +67,11 @@ input LogWhereUniqueInput {
 type Mutation {
   createFlow(code: String!, title: String!): Flow!
   createWebhook(noun: String!, url: String!, verb: String!): Webhook!
+  deleteWebhook(id: Int!): Webhook!
   generateApiKey: GeneratedApiKey!
   inviteTeammate(email: String!): User!
   login(email: String!, name: String!): User!
-  updateFlow(code: String!, id: Int!, run: Boolean, title: String!): Flow!
+  updateFlow(code: String!, id: Int!, repeatOptions: RepeatOptionsInput, run: Boolean, title: String!): Flow!
 }
 
 enum Noun {
@@ -84,6 +85,24 @@ type Query {
   myFlows(orderBy: FlowOrderByInput): [Flow!]!
   user: User!
   webhooks: [Webhook!]!
+}
+
+type RepeatOptions {
+  cron: String
+  every: Int
+  flow: Flow!
+  id: Int!
+  jobId: Int!
+  limit: Int
+  tz: String
+}
+
+input RepeatOptionsInput {
+  cron: String
+  every: String
+  flow: String
+  limit: String
+  tz: String
 }
 
 type Team {
@@ -105,10 +124,8 @@ input UserWhereUniqueInput {
 }
 
 enum Verb {
-  created
   errored
   executed
-  updated
 }
 
 type Webhook {

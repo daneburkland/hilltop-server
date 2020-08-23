@@ -15,21 +15,35 @@ gcloud container clusters create hilltop \
 Relevant: https://stackoverflow.com/questions/59337139/crashloopbackoff-postgres-gcp
 TLDR: the pv and pvc need to be created before the pod is deployed
 
-#### Creating db
+### Creating db
 
 ```
-kubectl apply -f ./postgres/k8s/prod/volume.yaml
-kubectl apply -f ./postgres/k8s/prod/service.yaml
-kubectl apply -f ./postgres/k8s/prod/deployment.yaml
+kubectl apply -f ./postgres/k8s/dev/
 kubectl get pods
 kubectl exec -it <postgres pod> bash
 createdb -U sample hilltop
 ```
 
+### Resetting db
+
+```
+kubectl apply -f ./postgres/k8s/dev/
+kubectl get pods
+kubectl exec -it <postgres pod> bash
+psql -h localhost -U sample --password
+```
+
 #### Migrating db
 
+export DATABASE_URL=postgres://sample:pleasechangeme@localhost:5432/hilltop
+prisma migrate save --experimental
 kubectl get pods
 kubectl exec <web pod> yarn migrate-up
+
+#### Seeding db
+
+kubectl get pods
+kubectl exec <web pod> node prisma/seeds.js
 
 ### Switching between local and gcloud contexts:
 
@@ -49,6 +63,18 @@ psql -h localhost -U sample --password hilltop
 ```
 
 ### local development
+
+#### Install kubectl
+
+`brew install kubectl`
+
+#### Install minikube
+
+`brew install minikube`
+
+#### Installing skaffold
+
+Latest installation instructions here: https://skaffold.dev/docs/install/
 
 ```
 minikube start

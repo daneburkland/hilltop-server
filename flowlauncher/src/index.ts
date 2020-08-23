@@ -25,6 +25,7 @@ try {
 
 try {
   flowQueue.on('completed', async (job: Job, jobResult: JobResult) => {
+    // TODO: just use prisma here
     await updateFlowRun(jobResult, job.data.id)
     await webhookQueue.add({
       verb: 'executed',
@@ -32,6 +33,15 @@ try {
       ...jobResult,
       ...job.data,
     })
+
+    if (jobResult.error) {
+      await webhookQueue.add({
+        verb: 'errored',
+        noun: 'Flow',
+        ...jobResult,
+        ...job.data,
+      })
+    }
     job.remove()
   })
 } catch (e) {

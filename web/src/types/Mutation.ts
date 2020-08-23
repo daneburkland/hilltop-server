@@ -1,5 +1,6 @@
-import { intArg, mutationType, stringArg, booleanArg } from '@nexus/schema'
+import { intArg, mutationType, stringArg, booleanArg, arg } from '@nexus/schema'
 import { getUser } from '../utils'
+import { RepeatOptions } from './RepeatOptions'
 // import { createFlowMutation } from './api/Mutation'
 const Queue = require('bull')
 const logger = require('pino')()
@@ -67,6 +68,35 @@ export const Mutation = mutationType({
         }
       },
     })
+    t.field('createRepeatOptions', {
+      type: 'RepeatOptions',
+      args: {
+        jobId: intArg({ nullable: false }),
+        cron: stringArg(),
+        tz: stringArg(),
+        limit: intArg(),
+        every: intArg(),
+      },
+      resolve: async (_, { jobId, cron, tz, limit, every }, ctx) => {
+        const { id } = await getUser(ctx)
+
+        try {
+          const repeatOptions = await ctx.prisma.repeatOptions.create({
+            data: {
+              jobId,
+              cron,
+              tz,
+              limit,
+              every,
+            },
+          })
+          return repeatOptions
+        } catch (e) {
+          logger.error(`Failed to create repeatOptions: ${e}`)
+          return e
+        }
+      },
+    })
     t.field('createFlow', {
       type: 'Flow',
       args: {
@@ -109,12 +139,14 @@ export const Mutation = mutationType({
     t.field('updateFlow', {
       type: 'Flow',
       args: {
-        title: stringArg({ nullable: false }),
-        code: stringArg({ nullable: false }),
+        title: stringArg(),
+        code: stringArg(),
         run: booleanArg(),
         id: intArg({ nullable: false }),
+        // TODO: this should be a separate mutation...
+        repeatOptions: arg({ type: 'RepeatOptionsInput' }),
       },
-      resolve: async (parent, { title, code, run, id }, ctx) => {
+      resolve: async (_, { title, code, run, id, repeatOptions = {} }, ctx) => {
         const { id: userId } = await getUser(ctx)
         const flow = await ctx.prisma.flow.update({
           where: { id },
@@ -122,8 +154,14 @@ export const Mutation = mutationType({
             title,
             code,
             updatedAt: new Date(),
-            runs: {
+            runs: run && {
               create: [{ result: '', code }],
+            },
+            repeatOptions: !!repeatOptions && {
+              upsert: {
+                create: { ...repeatOptions, jobId: id },
+                update: repeatOptions,
+              },
             },
           },
           include: {
@@ -137,8 +175,12 @@ export const Mutation = mutationType({
           if (run) {
             const id = flow.runs[0].id
             try {
-              await flowQueue.add({ id, code: flow.code, ownerId: userId })
-              logger.info('after')
+              const addedFlow = await flowQueue.add({
+                id,
+                code: flow.code,
+                ownerId: userId,
+              })
+              logger.info(`addedFlow: ${JSON.stringify(addedFlow)}`)
             } catch (e) {
               logger.error(e)
             }
@@ -237,6 +279,7 @@ export const Mutation = mutationType({
       resolve: async (_parent, { verb, noun, url }, ctx) => {
         const { id } = await getUser(ctx)
         if (!id) throw new Error('Count not authenticate user.')
+        logger.info(id)
 
         try {
           const webhook = await ctx.prisma.webhook.create({
@@ -252,6 +295,26 @@ export const Mutation = mutationType({
           return webhook
         } catch (e) {
           logger.error(`Failed to create webhook: ${e}`)
+        }
+      },
+    })
+    t.field('deleteWebhook', {
+      type: 'Webhook',
+      args: {
+        id: intArg({ nullable: false }),
+      },
+      resolve: async (_parent, { id: webhookId }, ctx) => {
+        const { id } = await getUser(ctx)
+        if (!id) throw new Error('Count not authenticate user.')
+
+        try {
+          const webhook = await ctx.prisma.webhook.delete({
+            where: { id: webhookId },
+          })
+
+          return webhook
+        } catch (e) {
+          logger.error(`Failed to delete webhook: ${e}`)
         }
       },
     })

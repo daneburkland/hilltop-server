@@ -22,6 +22,7 @@
     "pg-format": "^1.0.4",
     "pino": "^6.3.2",
     "puppeteer": "^5.0.0",
+    "serialize-error": "^7.0.1",
     "vm2": "^3.9.2",
     "xstate": "^4.11.0"
   },

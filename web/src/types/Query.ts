@@ -53,6 +53,7 @@ export const Query = queryType({
                 team: true,
               },
             },
+            repeatOptions: true,
             // TODO: change this to true
             runs: { take: 1, skip: 3 },
           },

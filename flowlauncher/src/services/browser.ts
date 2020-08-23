@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer')
+const { serializeError } = require('serialize-error')
 import { NodeVM } from 'vm2'
 const parentLogger = require('pino')()
 const fs = require('fs')
@@ -58,9 +59,8 @@ export default class BrowserService {
     const logger = parentLogger.child({ runId: id })
 
     const workDir = path.join(__dirname, `flowRun-${id}`)
-    fs.mkdirSync(workDir)
-
     try {
+      fs.mkdirSync(workDir)
       logger.info('Starting flow run')
       const browser = await puppeteer.launch({
         args: [
@@ -149,15 +149,22 @@ export default class BrowserService {
       const handler = vm.run(code, './foo.js')
 
       // Should wrap this in try catch, and return a { result, error } object?
-      const result = await handler({ page, logger })
+      let result, error, screenshotUrls
+      try {
+        result = await handler({ page, logger })
+        screenshotUrls = await uploadScreenshots(workDir, id, parentLogger)
+        logger.info('Flow run success')
+      } catch (e) {
+        logger.error('Caught errored flowRun, returning error')
+        error = serializeError(e)
+        result = serializeError(e)
+      }
 
       browser.close()
-      const screenshotUrls = await uploadScreenshots(workDir, id, parentLogger)
       del(workDir)
-      logger.info('Flow run success')
-      return { result, logs, screenshotUrls }
+      return { result, logs, screenshotUrls, error }
     } catch (e) {
-      logger.error(`Flow run error: ${e}`)
+      logger.error(`Unexpected flow run error: ${e}`)
       del(workDir)
       return { result: e }
     }

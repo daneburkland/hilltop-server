@@ -10,6 +10,7 @@ export const Flow = objectType({
     t.model.title()
     t.model.code()
     t.model.author()
+    t.model.repeatOptions()
     t.model.runs({
       pagination: true,
     })

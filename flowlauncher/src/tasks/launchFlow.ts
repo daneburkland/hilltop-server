@@ -5,12 +5,8 @@ import BrowserService from '../services/browser'
 import { Job, DoneCallback } from 'bull'
 
 const run = async (job: Job, done: DoneCallback) => {
-  try {
-    const result = await BrowserService.run(job.data)
-    done(null, result)
-  } catch (e) {
-    done(e)
-  }
+  const result = await BrowserService.run(job.data)
+  done(null, result)
 }
 
 export default run

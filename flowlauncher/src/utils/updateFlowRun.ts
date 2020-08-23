@@ -5,6 +5,7 @@ import { JobResult } from '../types'
 
 export default async function updateFlowRun(result: JobResult, id: number) {
   const logger = parentLogger.child({ runId: id })
+  logger.info(`result: ${result}`)
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
     // ssl: {
@@ -23,8 +24,8 @@ export default async function updateFlowRun(result: JobResult, id: number) {
     )
 
     await client.query(
-      `UPDATE "FlowRun" SET result = ($1), "screenshotUrls" = ($2) WHERE id=($3)`,
-      [JSON.stringify(result.result), result.screenshotUrls, id],
+      `UPDATE "FlowRun" SET result = ($1), "screenshotUrls" = ($2), "error" = ($3) WHERE id=($4)`,
+      [JSON.stringify(result.result), result.screenshotUrls, result.error, id],
     )
     await client.end()
     logger.info(`Updated flowRun successfully`)

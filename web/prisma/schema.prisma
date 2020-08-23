@@ -17,18 +17,30 @@ model FlowRun {
   createdAt      DateTime @default(now())
   logs           Log[]
   screenshotUrls String[]
+  error          String?
+}
+
+model RepeatOptions {
+  id    Int     @default(autoincrement()) @id
+  jobId Int     @unique
+  cron  String?
+  tz    String?
+  limit Int?
+  every Int?
+  flow  Flow
 }
 
 model Flow {
-  id        Int       @default(autoincrement()) @id
-  title     String
-  author    User      @relation(fields: [authorId], references: [id])
-  authorId  String
-  // I think I can get rid of code here
-  code      String
-  runs      FlowRun[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
+  id              Int            @default(autoincrement()) @id
+  title           String
+  author          User           @relation(fields: [authorId], references: [id])
+  authorId        String
+  code            String
+  runs            FlowRun[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @default(now())
+  repeatOptions   RepeatOptions? @relation(fields: [repeatOptionsId], references: [id])
+  repeatOptionsId Int?
 }
 
 model User {
@@ -79,8 +91,6 @@ enum Noun {
 }
 
 enum Verb {
-  created
-  updated
   executed
   errored
 }

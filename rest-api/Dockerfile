@@ -17,5 +17,4 @@ RUN yarn
 RUN yarn build
 
 EXPOSE 7000
-
 CMD [ "node", "dist/server" ]

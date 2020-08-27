@@ -64,10 +64,9 @@ profiles:
             buildArgs:
               ENV: development
         - image: gcr.io/hilltop-285223/hilltop-flowlauncher
-          context: flowlauncher
+          context: ./
           docker:
-            buildArgs:
-              ENV: development
+            dockerfile: /flowlauncher/Dockerfile
         # - image: gcr.io/hilltop-285223/hilltop-api
         #   context: web
         #   docker:

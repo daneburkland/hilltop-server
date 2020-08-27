@@ -32,11 +32,7 @@ export interface NexusGenInputs {
     id?: number | null; // Int
   }
   RepeatOptionsInput: { // input type
-    cron?: string | null; // String
-    every?: string | null; // String
-    flow?: string | null; // String
-    limit?: string | null; // String
-    tz?: string | null; // String
+    every?: number | null; // Int
   }
   UserWhereUniqueInput: { // input type
     email?: string | null; // String
@@ -81,7 +77,6 @@ export interface NexusGenRootTypes {
   }
   Log: { // root type
     id: number; // Int!
-    level: string; // String!
     msg: string; // String!
     stack?: string | null; // String
   }
@@ -144,6 +139,7 @@ export interface NexusGenFieldTypes {
     code: string; // String!
     createdAt: any; // DateTime!
     id: number; // Int!
+    repeatOptions: NexusGenRootTypes['RepeatOptions'] | null; // RepeatOptions
     runs: NexusGenRootTypes['FlowRun'][]; // [FlowRun!]!
     title: string; // String!
     updatedAt: any; // DateTime!
@@ -162,19 +158,20 @@ export interface NexusGenFieldTypes {
   }
   Log: { // field return type
     id: number; // Int!
-    level: string; // String!
     msg: string; // String!
     run: NexusGenRootTypes['FlowRun']; // FlowRun!
     stack: string | null; // String
   }
   Mutation: { // field return type
     createFlow: NexusGenRootTypes['Flow']; // Flow!
+    createRepeatOptions: NexusGenRootTypes['RepeatOptions']; // RepeatOptions!
     createWebhook: NexusGenRootTypes['Webhook']; // Webhook!
     deleteWebhook: NexusGenRootTypes['Webhook']; // Webhook!
     generateApiKey: NexusGenRootTypes['GeneratedApiKey']; // GeneratedApiKey!
     inviteTeammate: NexusGenRootTypes['User']; // User!
     login: NexusGenRootTypes['User']; // User!
     updateFlow: NexusGenRootTypes['Flow']; // Flow!
+    updateFlowOptions: NexusGenRootTypes['Flow']; // Flow!
   }
   Query: { // field return type
     flow: NexusGenRootTypes['Flow']; // Flow!
@@ -242,6 +239,13 @@ export interface NexusGenArgTypes {
       code: string; // String!
       title: string; // String!
     }
+    createRepeatOptions: { // args
+      cron?: string | null; // String
+      every?: number | null; // Int
+      jobId: number; // Int!
+      limit?: number | null; // Int
+      tz?: string | null; // String
+    }
     createWebhook: { // args
       noun: string; // String!
       url: string; // String!
@@ -258,11 +262,15 @@ export interface NexusGenArgTypes {
       name: string; // String!
     }
     updateFlow: { // args
-      code: string; // String!
+      code?: string | null; // String
+      id: number; // Int!
+      run?: boolean | null; // Boolean
+      title?: string | null; // String
+    }
+    updateFlowOptions: { // args
       id: number; // Int!
       repeatOptions?: NexusGenInputs['RepeatOptionsInput'] | null; // RepeatOptionsInput
-      run?: boolean | null; // Boolean
-      title: string; // String!
+      title?: string | null; // String
     }
   }
   Query: {

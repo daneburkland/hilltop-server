@@ -82,3 +82,10 @@ skaffold dev --port-forward
 ```
 
 (port forwarding is off by default)
+
+### bull-repl
+
+```
+bull-repl
+connect -h ec2-54-243-74-201.compute-1.amazonaws.com -p 17669 --password p393a70f1ea5a26afb1e6ab8ff54e768c708a40e8e3b929ec5cdb421b91943114 -d 0 "flowQueue"
+```

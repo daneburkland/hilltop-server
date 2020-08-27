@@ -130,19 +130,19 @@ export default class BrowserService {
       page.screenshot = makeSafe(page.screenshot)
       const logs = [] as any
       vm.on('console.log', (data: any) => {
-        logs.push(['log', id, data])
+        logs.push({ level: 'log', msg: data })
       })
 
       vm.on('console.info', (data: any) => {
-        logs.push(['info', id, data])
+        logs.push({ level: 'info', msg: data })
       })
 
       vm.on('console.warn', (data: any) => {
-        logs.push(['warn', id, data])
+        logs.push({ level: 'warn', msg: data })
       })
 
       vm.on('console.error', (data: any) => {
-        logs.push(['error', id, data])
+        logs.push({ level: 'error', msg: data })
       })
       // This should be in the docker sandbox, and the file should have already been
       // mounted by the launcher process and be something like
@@ -151,7 +151,7 @@ export default class BrowserService {
       // Should wrap this in try catch, and return a { result, error } object?
       let result, error, screenshotUrls
       try {
-        result = await handler({ page, logger })
+        result = await handler({ page })
         screenshotUrls = await uploadScreenshots(workDir, id, parentLogger)
         logger.info('Flow run success')
       } catch (e) {
@@ -162,11 +162,11 @@ export default class BrowserService {
 
       browser.close()
       del(workDir)
-      return { result, logs, screenshotUrls, error }
+      return { result, logs, screenshotUrls, error, id }
     } catch (e) {
       logger.error(`Unexpected flow run error: ${e}`)
       del(workDir)
-      return { result: e }
+      return { result: e, id }
     }
   }
 }

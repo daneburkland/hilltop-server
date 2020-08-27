@@ -5,7 +5,7 @@ import { JobResult } from '../types'
 
 export default async function updateFlowRun(result: JobResult, id: number) {
   const logger = parentLogger.child({ runId: id })
-  logger.info(`result: ${result}`)
+  logger.info(`result: ${JSON.stringify(result)}`)
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
     // ssl: {

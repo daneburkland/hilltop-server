@@ -1,9 +1,12 @@
+import { PrismaClient } from '@prisma/client'
 const Queue = require('bull')
 import updateFlowRun from './utils/updateFlowRun'
 import launchFlow from './tasks/launchFlow'
 import { Job } from 'bull'
 import { JobResult } from './types'
 const logger = require('pino')()
+
+const prisma = new PrismaClient()
 
 const webhookQueue = new Queue('webhookQueue', process.env.REDIS_URL)
 
@@ -26,7 +29,21 @@ try {
 try {
   flowQueue.on('completed', async (job: Job, jobResult: JobResult) => {
     // TODO: just use prisma here
-    await updateFlowRun(jobResult, job.data.id)
+    await prisma.flowRun.update({
+      where: { id: jobResult.id },
+      data: {
+        result: jobResult.result,
+        screenshotUrls: {
+          set: jobResult.screenshotUrls,
+        },
+        error: jobResult.error,
+        logs: {
+          create: jobResult.logs,
+        },
+      },
+    })
+    logger.info(`Updated flowRun successfully`)
+    // await updateFlowRun(jobResult, job.data.id)
     await webhookQueue.add({
       verb: 'executed',
       noun: 'Flow',

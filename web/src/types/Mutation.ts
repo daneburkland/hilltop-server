@@ -123,9 +123,7 @@ export const Mutation = mutationType({
 
           try {
             await flowQueue.add({
-              id: flow.runs[0].id,
-              code: flow.code,
-              ownerId: id,
+              flowId: flow.id,
             })
           } catch (e) {
             logger.error(e)
@@ -136,6 +134,74 @@ export const Mutation = mutationType({
         }
       },
     })
+    t.field('updateFlowOptions', {
+      type: 'Flow',
+      args: {
+        title: stringArg(),
+        id: intArg({ nullable: false }),
+        repeatOptions: arg({ type: 'RepeatOptionsInput' }),
+      },
+      resolve: async (_, { title, id, repeatOptions = {} }, ctx) => {
+        let flow, flowRunJob
+
+        if (repeatOptions) {
+          // TODO: pull this out into a service? eg removeRepeatableFlowById(id)
+          const oldRepeatOptions = await ctx.prisma.repeatOptions.findOne({
+            where: { jobId: id },
+          })
+          if (oldRepeatOptions) {
+            logger.info(
+              `Will attempt to remove job with repeatOptions: ${JSON.stringify(
+                oldRepeatOptions,
+              )}`,
+            )
+            try {
+              // TODO: I should just use jobId as the db id?
+              delete oldRepeatOptions.id
+              flowQueue.removeRepeatable(oldRepeatOptions)
+              logger.info(
+                `Removed repeatable job: ${JSON.stringify(oldRepeatOptions)}`,
+              )
+            } catch (e) {
+              logger.error(e)
+            }
+          }
+        }
+        try {
+          flow = await ctx.prisma.flow.update({
+            where: { id },
+            data: {
+              title,
+              updatedAt: new Date(),
+              repeatOptions: !!repeatOptions && {
+                upsert: {
+                  create: { ...repeatOptions, jobId: id },
+                  update: repeatOptions,
+                },
+              },
+            },
+            include: {
+              repeatOptions: true,
+            },
+          })
+
+          if (flow.repeatOptions) {
+            logger.info(`repeatOptions, ${JSON.stringify(flow.repeatOptions)}`)
+            flowRunJob = await flowQueue.add(
+              {
+                flowId: id,
+              },
+              { jobId: id, repeat: repeatOptions },
+            )
+          }
+          logger.info(`flowRunJob: ${JSON.stringify(flowRunJob)}`)
+        } catch (e) {
+          logger.error(e)
+        }
+
+        return flow
+      },
+    })
     t.field('updateFlow', {
       type: 'Flow',
       args: {
@@ -143,47 +209,23 @@ export const Mutation = mutationType({
         code: stringArg(),
         run: booleanArg(),
         id: intArg({ nullable: false }),
-        // TODO: this should be a separate mutation...
-        repeatOptions: arg({ type: 'RepeatOptionsInput' }),
       },
-      resolve: async (_, { title, code, run, id, repeatOptions = {} }, ctx) => {
-        const { id: userId } = await getUser(ctx)
+      resolve: async (_, { title, code, run, id }, ctx) => {
         const flow = await ctx.prisma.flow.update({
           where: { id },
           data: {
             title,
             code,
             updatedAt: new Date(),
-            runs: run && {
-              create: [{ result: '', code }],
-            },
-            repeatOptions: !!repeatOptions && {
-              upsert: {
-                create: { ...repeatOptions, jobId: id },
-                update: repeatOptions,
-              },
-            },
-          },
-          include: {
-            runs: {
-              take: -1,
-            },
           },
         })
 
         try {
           if (run) {
-            const id = flow.runs[0].id
-            try {
-              const addedFlow = await flowQueue.add({
-                id,
-                code: flow.code,
-                ownerId: userId,
-              })
-              logger.info(`addedFlow: ${JSON.stringify(addedFlow)}`)
-            } catch (e) {
-              logger.error(e)
-            }
+            const flowRunJob = await flowQueue.add({
+              flowId: id,
+            })
+            logger.info(`flowRunJob: ${JSON.stringify(flowRunJob)}`)
           }
         } catch (e) {
           logger.error(e)

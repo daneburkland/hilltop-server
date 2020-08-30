@@ -27,25 +27,25 @@ async function validateResourceOwnership(
   res: Response,
   next: NextFunction,
 ) {
-  const { id } = req.params
-
   try {
+    const { id } = req.params
     const flow = await prisma.flow.findOne({
       where: {
         id: parseInt(id),
       },
-      include: { author: true },
+      include: { author: true, repeatOptions: true },
     })
 
     if (!flow || flow.author.id !== req.user.id) {
       next(createError(401, 'Unauthorized.'))
       return
     }
+    req.flow = flow
+    next()
   } catch (e) {
     next(createError(401, 'Unauthorized.'))
     return
   }
-  next()
 }
 
 app.use(validateUser)
@@ -81,12 +81,6 @@ app.post('/flow', async (req: any, res: any) => {
 
 app.put('/flow/:id', async (req: any, res: any) => {
   const { id } = req.params
-  let oldRepeatOptions
-  if (req.body.repeatOptions) {
-    oldRepeatOptions = await prisma.repeatOptions.findOne({
-      where: { jobId: parseInt(id) },
-    })
-  }
 
   const flow = await prisma.flow.update({
     where: { id: parseInt(id) },
@@ -111,17 +105,19 @@ app.put('/flow/:id', async (req: any, res: any) => {
     )
   }
 
-  if (oldRepeatOptions) {
+  if (req.flow.repeatOptions) {
     logger.info(
       `Will attempt to remove job with repeatOptions: ${JSON.stringify(
-        oldRepeatOptions,
+        req.flow.repeatOptions,
       )}`,
     )
     try {
-      // TODO: I should just use jobId as the db id?
-      delete oldRepeatOptions.id
-      flowQueue.removeRepeatable(oldRepeatOptions)
-      logger.info(`Removed repeatable job: ${JSON.stringify(oldRepeatOptions)}`)
+      // TODO: define repeatOptions#jobId as the foreign key to Flow table
+      delete req.flow.repeatOptions.id
+      flowQueue.removeRepeatable(req.flow.repeatOptions)
+      logger.info(
+        `Removed repeatable job: ${JSON.stringify(req.flow.repeatOptions)}`,
+      )
     } catch (e) {
       logger.error(e)
     }
@@ -132,35 +128,32 @@ app.put('/flow/:id', async (req: any, res: any) => {
 
 app.delete('/flow/:id', async (req: any, res: any) => {
   const { id } = req.params
-  const user = await getUser(req.header('X-API-KEY'))
-  if (!user) {
-    res.json({ error: 'Incorrect token provided.' })
-  } else {
-    const flowRuns = await prisma.flowRun.deleteMany({
-      where: {
-        flow: {
-          id: parseInt(id),
-        },
-      },
-    })
-    const flow = await prisma.flow.delete({
-      where: { id: parseInt(id) },
-    })
-    res.json(flow)
+
+  if (req.flow.repeatOptions) {
+    const repeatOptions = { ...req.flow.repeatOptions }
+    delete repeatOptions.id
+    flowQueue.removeRepeatable(repeatOptions)
   }
+
+  await prisma.flowRun.deleteMany({
+    where: {
+      flow: {
+        id: parseInt(id),
+      },
+    },
+  })
+  await prisma.repeatOptions.delete({
+    where: { id: req.flow.repeatOptions.id },
+  })
+  const flow = await prisma.flow.delete({
+    where: { id: parseInt(id) },
+  })
+
+  res.json(flow)
 })
 
 app.get('/flow/:id', async (req: any, res: any) => {
-  const { id } = req.params
-  const user = await getUser(req.header('X-API-KEY'))
-  if (!user) {
-    res.json({ error: 'Incorrect token provided.' })
-  } else {
-    const flow = await prisma.flow.findOne({
-      where: { id: parseInt(id) },
-    })
-    res.json(flow)
-  }
+  res.json(req.flow)
 })
 
 app.get('/webhooks', async (req: any, res: any) => {

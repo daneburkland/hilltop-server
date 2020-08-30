@@ -1,18 +1,13 @@
 FROM node:12
 
-# Create app directory
-WORKDIR /usr/src/app
+ADD ./webhook/package.json /tmp/package.json
+RUN cd /tmp && yarn
+RUN mkdir -p /usr/src/app && cp -a /tmp/node_modules /usr/src/app/
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+WORKDIR /usr/src/app
 
 COPY ./webhook/ .
 COPY ./web/prisma/ ./prisma/
-
-RUN yarn
-# If you are building your code for production
-# RUN npm ci --only=production
 
 RUN yarn build
 

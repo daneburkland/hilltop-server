@@ -55,6 +55,7 @@ type GeneratedApiKey {
 
 type Log {
   id: Int!
+  level: String!
   msg: String!
   run: FlowRun!
   stack: String

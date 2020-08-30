@@ -1,18 +1,27 @@
 {
   "name": "hilltop-web",
   "license": "MIT",
+  "version": "1.0.0",
   "scripts": {
+    "test": "jest",
+    "seed": "node prisma/seeds",
     "start": "node dist/server",
     "clean": "rm -rf dist",
     "build": "yarn clean && yarn generate && tsc",
     "generate:prisma": "prisma generate",
     "generate:nexus": "NODE_ENV=development ts-node --transpile-only src/schema --nexus-exit",
     "generate": "yarn generate:prisma && yarn generate:nexus",
-    "postinstall": "yarn generate",
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server",
     "migrate-save": "prisma migrate save --experimental",
     "migrate-up": "prisma migrate up --experimental",
     "studio": "prisma studio --experimental"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "setupFilesAfterEnv": [
+      "<rootDir>/setupTests.ts"
+    ],
+    "testEnvironment": "./nexus-test-environment.js"
   },
   "dependencies": {
     "@nexus/schema": "^0.14.0",
@@ -30,8 +39,11 @@
     "graphql": "^14.6.0",
     "graphql-shield": "5.7.3",
     "graphql-yoga": "^1.18.3",
+    "jest-environment-node": "^26.3.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.8.1",
+    "nanoid": "^3.1.12",
+    "nexus": "^0.26.1",
     "nexus-plugin-prisma": "^0.17.0",
     "node-fetch": "^2.6.0",
     "nodemailer": "^6.4.10",
@@ -44,9 +56,12 @@
   "devDependencies": {
     "@types/bcryptjs": "2.4.2",
     "@types/bull": "^3.14.0",
+    "@types/jest": "^26.0.10",
     "@types/jsonwebtoken": "8.5.0",
     "@types/node": "12.12.47",
     "@types/ws": "7.2.5",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.3.0",
     "ts-node": "8.10.2",
     "ts-node-dev": "1.0.0-pre.49",
     "typescript": "3.9.5"

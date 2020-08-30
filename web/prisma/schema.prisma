@@ -47,7 +47,7 @@ model User {
   id       String    @id
   email    String    @unique
   name     String
-  flow     Flow[]
+  flows    Flow[]
   apiKey   ApiKey?
   team     Team      @relation(fields: [teamId], references: [id])
   teamId   Int

@@ -35,15 +35,20 @@ psql -h localhost -U sample --password
 
 #### Migrating db
 
+<!-- generate new migrations -->
+
 export DATABASE_URL=postgres://sample:pleasechangeme@localhost:5432/hilltop
 prisma migrate save --experimental
+
+<!-- Run migrations -->
+
 kubectl get pods
 kubectl exec <web pod> yarn migrate-up
 
 #### Seeding db
 
 kubectl get pods
-kubectl exec <web pod> node prisma/seeds.js
+kubectl exec <web pod> yarn seed
 
 ### Switching between local and gcloud contexts:
 
@@ -81,7 +86,16 @@ minikube start
 skaffold dev --port-forward
 ```
 
+If developing against specific services, can use `skaffold dev -p slim --port-forward` (and update profile accordingly)
+
 (port forwarding is off by default)
+
+#### Cleaning minikube
+
+```
+docker rmi $(docker images |grep 'gcr.io/hilltop-285223/hilltop-rest-api')
+docker rmi $(docker images |grep 'gcr.io/hilltop-285223/hilltop-web')
+```
 
 ### bull-repl
 

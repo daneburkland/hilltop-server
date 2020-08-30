@@ -77,6 +77,7 @@ export interface NexusGenRootTypes {
   }
   Log: { // root type
     id: number; // Int!
+    level: string; // String!
     msg: string; // String!
     stack?: string | null; // String
   }
@@ -158,6 +159,7 @@ export interface NexusGenFieldTypes {
   }
   Log: { // field return type
     id: number; // Int!
+    level: string; // String!
     msg: string; // String!
     run: NexusGenRootTypes['FlowRun']; // FlowRun!
     stack: string | null; // String

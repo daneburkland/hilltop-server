@@ -28,6 +28,49 @@ deploy:
       - flowlauncher/k8s/*
 
 profiles:
+  - name: slim
+    activation:
+      - command: slim
+    deploy:
+      kubectl:
+        manifests:
+          - postgres/k8s/dev/*
+          - web/k8s/web/*
+          # - webhook/k8s/*
+          # - mailer/k8s/*
+          # - flowlauncher/k8s/*
+          - rest-api/k8s/*
+    build:
+      local:
+        push: false
+        useDockerCLI: true
+      artifacts:
+        - image: gcr.io/hilltop-285223/hilltop-web
+          context: web
+          docker:
+            buildArgs:
+              ENV: development
+        - image: gcr.io/hilltop-285223/hilltop-rest-api
+          context: ./
+          docker:
+            dockerfile: /rest-api/Dockerfile
+        # - image: gcr.io/hilltop-285223/hilltop-webhook
+        #   context: ./
+        #   docker:
+        #     dockerfile: /webhook/Dockerfile
+        # - image: gcr.io/hilltop-285223/hilltop-mailer
+        #   context: mailer
+        #   docker:
+        #     buildArgs:
+        #       ENV: development
+        # - image: gcr.io/hilltop-285223/hilltop-flowlauncher
+        #   context: ./
+        #   docker:
+        #     dockerfile: /flowlauncher/Dockerfile
+        # - image: gcr.io/hilltop-285223/hilltop-api
+        #   context: web
+        #   docker:
+        #     dockerfile: /src/api/Dockerfile
   - name: dev
     activation:
       - command: dev

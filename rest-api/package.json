@@ -2,31 +2,51 @@
   "name": "hilltop-rest-api",
   "license": "MIT",
   "scripts": {
+    "test": "jest",
+    "test-debug": "node --inspect-brk=0.0.0.0 ./node_modules/jest/bin/jest.js",
     "start": "node dist/server",
     "clean": "rm -rf dist",
     "build": "yarn clean && yarn generate && tsc",
-    "generate": "prisma generate",
-    "postinstall": "yarn generate"
+    "generate": "prisma generate"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "setupFilesAfterEnv": [
+      "<rootDir>/setupTests.ts"
+    ],
+    "testEnvironment": "./prisma-test-environment.js"
   },
   "dependencies": {
     "@prisma/client": "^2.4.1",
+    "@types/pg": "^7.14.4",
+    "@types/supertest": "^2.0.10",
     "aws-sdk": "^2.716.0",
+    "body-parser": "1.19.0",
     "bull": "^3.15.0",
     "del": "^5.1.0",
     "express": "^4.17.1",
-    "body-parser": "1.19.0",
+    "get-port": "^5.1.1",
     "graphql": "^14.6.0",
+    "http-errors": "^1.8.0",
+    "jest-environment-node": "26.3.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.8.1",
+    "nanoid": "^3.1.12",
     "nexus-plugin-prisma": "^0.17.0",
     "node-fetch": "^2.6.0",
-    "pino": "^6.3.2"
+    "pg": "^8.3.0",
+    "pino": "^6.3.2",
+    "supertest": "^4.0.2"
   },
   "devDependencies": {
-    "@types/bull": "^3.14.0",
-    "@types/node": "12.12.47",
-    "@types/express": "4.17.7",
     "@types/body-parser": "1.19.0",
+    "@types/bull": "^3.14.0",
+    "@types/express": "4.17.7",
+    "@types/jest": "^26.0.10",
+    "@types/node": "12.12.47",
+    "jest": "^26.4.2",
+    "redis-cli": "^2.0.0",
+    "ts-jest": "^26.3.0",
     "ts-node": "8.10.2",
     "ts-node-dev": "1.0.0-pre.49",
     "typescript": "3.9.5"

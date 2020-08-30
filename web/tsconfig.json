@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
+    "plugins": [{ "name": "nexus/typescript-language-service" }],
     "outDir": "dist",
     // https://github.com/graphql-nexus/nexus-plugin-prisma/issues/82
     "skipLibCheck": true,
     "rootDir": "src",
     "lib": ["esnext", "dom"],
-    "strict": true
+    "strict": true,
+    "esModuleInterop": true,
+    "typeRoots": ["node_modules/@types", "types"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "src", "types.d.ts"]
 }

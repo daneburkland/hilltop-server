@@ -5,8 +5,11 @@
     "skipLibCheck": true,
     "rootDir": "src",
     "lib": ["esnext", "dom"],
+    "target": "es6",
+    "module": "commonjs",
     "strict": true,
     "esModuleInterop": true
   },
+  "files": ["custom.d.ts"],
   "include": ["src/**/*"]
 }

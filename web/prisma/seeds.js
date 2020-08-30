@@ -1,23 +1,50 @@
 const { PrismaClient } = require('@prisma/client')
+const { blueAdminData, blueTeammateData } = require('./blueTeam')
+const { redAdminData, redTeammateData } = require('./redTeam')
 
 const prisma = new PrismaClient()
 
-const main = async () => {
-  const flowExecuted = await prisma.event.create({
-    data: {
+main = async () => {
+  const flowExecuted = await prisma.event.upsert({
+    where: {
+      noun_verb: {
+        noun: 'Flow',
+        verb: 'executed',
+      },
+    },
+    create: {
       noun: 'Flow',
       verb: 'executed',
     },
+    update: {},
   })
 
-  const flowErrored = await prisma.event.create({
-    data: {
+  const flowErrored = await prisma.event.upsert({
+    where: {
+      noun_verb: {
+        noun: 'Flow',
+        verb: 'errored',
+      },
+    },
+    create: {
       noun: 'Flow',
       verb: 'errored',
     },
+    update: {},
   })
 
-  console.log(flowExecuted, flowErrored)
+  // USERS
+  const users = [blueAdminData, blueTeammateData, redAdminData, redTeammateData]
+
+  const persistedUsers = await Promise.all(
+    users.map((user) => {
+      return prisma.user.create({
+        data: user,
+      })
+    }),
+  )
+
+  console.log(flowExecuted, flowErrored, ...persistedUsers)
 }
 
 main()

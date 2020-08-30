@@ -5,8 +5,7 @@
     "start": "node dist/index",
     "clean": "rm -rf dist",
     "build": "yarn clean && yarn generate && tsc",
-    "generate": "prisma generate",
-    "postinstall": "yarn generate"
+    "generate": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^2.4.1",

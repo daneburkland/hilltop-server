@@ -2,7 +2,7 @@
   "name": "hilltop-rest-api",
   "license": "MIT",
   "scripts": {
-    "test": "jest",
+    "test": "jest --runInBand",
     "test-debug": "node --inspect-brk=0.0.0.0 ./node_modules/jest/bin/jest.js",
     "start": "node dist/server",
     "clean": "rm -rf dist",
@@ -11,6 +11,9 @@
   },
   "jest": {
     "preset": "ts-jest",
+    "roots": [
+      "<rootDir>/src"
+    ],
     "setupFilesAfterEnv": [
       "<rootDir>/setupTests.ts"
     ],

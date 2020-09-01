@@ -14,9 +14,9 @@ exports.redAdminData = {
   email: 'admin@red.red',
   team: { create: redTeamData },
   apiKey: { create: redAdminApiKeyData },
-  flows: {
-    create: [redAdminFlow1Data],
-  },
+  // flows: {
+  //   create: [redAdminFlow1Data],
+  // },
 }
 
 const redTeammateApiKeyData = {
@@ -34,7 +34,7 @@ exports.redTeammateData = {
   email: 'teammate@red.red',
   team: { create: redTeamData },
   apiKey: { create: redTeammateApiKeyData },
-  flows: {
-    create: [redTeammateFlow1Data],
-  },
+  // flows: {
+  //   create: [redTeammateFlow1Data],
+  // },
 }

@@ -103,3 +103,10 @@ docker rmi $(docker images |grep 'gcr.io/hilltop-285223/hilltop-web')
 bull-repl
 connect -h ec2-54-243-74-201.compute-1.amazonaws.com -p 17669 --password p393a70f1ea5a26afb1e6ab8ff54e768c708a40e8e3b929ec5cdb421b91943114 -d 0 "flowQueue"
 ```
+
+## testing
+
+### Auth0
+
+A separate auth0 application (hilltopTest) and API (https://hilltopTest) are used in jest tests. The 'Blue admin' user
+has authorized with this application and a token is fetched and set as an env variable on setup of the jest environment

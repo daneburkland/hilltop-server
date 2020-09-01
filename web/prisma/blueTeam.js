@@ -10,13 +10,13 @@ const blueAdminFlow1Data = {
 const blueTeamData = { name: 'Blue team' }
 exports.blueAdminData = {
   name: 'Blue Admin',
-  id: 'blueAdmin',
+  id: 'auth0|5f4e4f3c0e634f006d229826',
   email: 'admin@blue.blue',
   team: { create: blueTeamData },
   apiKey: { create: blueAdminApiKeyData },
-  flows: {
-    create: [blueAdminFlow1Data],
-  },
+  // flows: {
+  //   create: [blueAdminFlow1Data],
+  // },
 }
 
 const blueTeammateApiKeyData = {
@@ -34,7 +34,7 @@ exports.blueTeammateData = {
   email: 'teammate@blue.blue',
   team: { create: blueTeamData },
   apiKey: { create: blueTeammateApiKeyData },
-  flows: {
-    create: [blueTeammateFlow1Data],
-  },
+  // flows: {
+  //   create: [blueTeammateFlow1Data],
+  // },
 }

@@ -1,13 +1,10 @@
 import { PrismaClient } from '@prisma/client'
-const path = require('path')
-const fs = require('fs')
 export const logger = require('pino')()
 import BrowserService from '../services/browser'
 import { Job, DoneCallback } from 'bull'
-
 const prisma = new PrismaClient()
 
-const run = async (job: Job, done: DoneCallback) => {
+const launchFlow = async (job: Job, done: DoneCallback) => {
   let flow, flowRun
   try {
     flow = await prisma.flow.findOne({
@@ -23,8 +20,6 @@ const run = async (job: Job, done: DoneCallback) => {
     const code = flow?.code as string
     flowRun = await prisma.flowRun.create({
       data: {
-        // TODO: make this optional column
-        result: '',
         code,
         flow: {
           connect: { id: job.data.flowId },
@@ -37,10 +32,13 @@ const run = async (job: Job, done: DoneCallback) => {
       code,
       id: flowRun.id,
     })
+
+    await prisma.$disconnect()
     done(null, result)
   } catch (e) {
+    await prisma.$disconnect()
     logger.error(e)
   }
 }
 
-export default run
+export default launchFlow

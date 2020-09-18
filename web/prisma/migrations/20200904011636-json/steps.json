@@ -1,0 +1,30 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateField",
+      "model": "FlowRun",
+      "field": "result",
+      "type": "Json",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "FlowRun",
+      "field": "error",
+      "type": "Json"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "flows",
+      "type": "Flow",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "flow"
+    }
+  ]
+}

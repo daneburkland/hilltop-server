@@ -44,11 +44,15 @@ main = async () => {
     }),
   )
 
+  console.log('disconnecting seed prisma')
+  await prisma.$disconnect()
+
   console.log(flowExecuted, flowErrored, ...persistedUsers)
 }
 
 main()
   .catch((e) => console.error(e))
   .finally(async () => {
-    await prisma.disconnect()
+    console.log('disconnecting seed prisma')
+    await prisma.$disconnect()
   })

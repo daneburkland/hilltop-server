@@ -2,6 +2,8 @@
   "name": "hilltop-flowlauncher",
   "license": "MIT",
   "scripts": {
+    "test": "jest --runInBand --detectOpenHandles",
+    "seed": "node prisma/seeds",
     "start": "node dist/index",
     "clean": "rm -rf dist",
     "build": "yarn clean && yarn generate && tsc",
@@ -18,20 +20,36 @@
     "del": "^5.1.0",
     "dockerode": "^3.2.0",
     "dotenv": "^8.2.0",
+    "ioredis": "^4.17.3",
+    "nanoid": "^3.1.12",
+    "nexus-plugin-prisma": "^0.17.0",
     "pg": "^8.3.0",
     "pg-format": "^1.0.4",
-    "nexus-plugin-prisma": "^0.17.0",
     "pino": "^6.3.2",
     "puppeteer": "^5.0.0",
     "serialize-error": "^7.0.1",
     "vm2": "^3.9.2",
     "xstate": "^4.11.0"
   },
+  "jest": {
+    "preset": "ts-jest",
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/setupTests.ts"
+    ],
+    "testEnvironment": "./prisma-test-environment.js"
+  },
   "devDependencies": {
     "@types/bull": "^3.14.0",
     "@types/node": "12.12.47",
+    "redis-cli": "^2.0.0",
     "ts-node": "8.10.2",
     "ts-node-dev": "1.0.0-pre.49",
+    "@types/jest": "^26.0.10",
+    "ts-jest": "^26.3.0",
+    "jest": "^26.4.2",
     "typescript": "3.9.5"
   },
   "prettier": {

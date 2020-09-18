@@ -1,4 +1,3 @@
-// tests/nexus-test-environment.js
 const { Client } = require('pg')
 const NodeEnvironment = require('jest-environment-node')
 const { nanoid } = require('nanoid')
@@ -14,7 +13,7 @@ class PrismaTestEnvironment extends NodeEnvironment {
     // Generate a unique schema identifier for this test context
     this.schema = `test_${nanoid()}`
     // Generate the pg connection string for the test schema
-    this.databaseUrl = `postgres://sample:pleasechangeme@postgres:5432/testing?schema=${this.schema}`
+    this.databaseUrl = `postgres://sample:pleasechangeme@postgres:5432/restApiTesting?schema=${this.schema}`
     this.redisUrl = `redis://h:pe09526a88f79285d708d6b8edc4ad6291d0c3ff612aac707d1fd28b3fc3aa4ea@ec2-3-226-208-170.compute-1.amazonaws.com:8279`
   }
   async setup() {

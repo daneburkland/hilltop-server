@@ -146,27 +146,26 @@ export default class BrowserService {
       })
       // This should be in the docker sandbox, and the file should have already been
       // mounted by the launcher process and be something like
-      const handler = vm.run(code, './foo.js')
 
       // Should wrap this in try catch, and return a { result, error } object?
       let result, error, screenshotUrls
       try {
+        const handler = vm.run(code, './foo.js')
         result = await handler({ page })
         screenshotUrls = await uploadScreenshots(workDir, id, parentLogger)
         logger.info('Flow run success')
       } catch (e) {
         logger.error('Caught errored flowRun, returning error')
         error = serializeError(e)
-        result = serializeError(e)
       }
 
       browser.close()
       del(workDir)
       return { result, logs, screenshotUrls, error, id }
-    } catch (e) {
-      logger.error(`Unexpected flow run error: ${e}`)
+    } catch (error) {
+      logger.error(`Unexpected flow run error: ${error}`)
       del(workDir)
-      return { result: e, id }
+      return { error, id }
     }
   }
 }

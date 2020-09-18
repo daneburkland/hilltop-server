@@ -6,6 +6,7 @@
     "skipLibCheck": true,
     "rootDir": "src",
     "lib": ["esnext", "dom"],
+    "esModuleInterop": true,
     "strict": true
   },
   "include": ["src/**/*", "src/keyfile.json"]

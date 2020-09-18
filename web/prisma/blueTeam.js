@@ -3,10 +3,7 @@ const blueAdminApiKeyData = {
   hashed: '802577d50e8e0228fe479592ccc7e1974028d4662337367518f2a05e5d6192dc',
   prefix: 'foo',
 }
-const blueAdminFlow1Data = {
-  title: "Blue admin's first flow",
-  code: 'Foo',
-}
+
 const blueTeamData = { name: 'Blue team' }
 exports.blueAdminData = {
   name: 'Blue Admin',
@@ -14,9 +11,6 @@ exports.blueAdminData = {
   email: 'admin@blue.blue',
   team: { create: blueTeamData },
   apiKey: { create: blueAdminApiKeyData },
-  // flows: {
-  //   create: [blueAdminFlow1Data],
-  // },
 }
 
 const blueTeammateApiKeyData = {
@@ -24,17 +18,11 @@ const blueTeammateApiKeyData = {
   hashed: 'bd3f2f07b7c60ae81b39d4d4c83214a8263451cbd7104df2517b913d8be5e148',
   prefix: 'foo',
 }
-const blueTeammateFlow1Data = {
-  title: "Blue teammate's first test",
-  code: 'Foo',
-}
+
 exports.blueTeammateData = {
   name: 'Blue Teammate',
   id: 'blueTeammate',
   email: 'teammate@blue.blue',
   team: { create: blueTeamData },
   apiKey: { create: blueTeammateApiKeyData },
-  // flows: {
-  //   create: [blueTeammateFlow1Data],
-  // },
 }

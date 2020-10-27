@@ -3,7 +3,7 @@
   "license": "MIT",
   "version": "1.0.0",
   "scripts": {
-    "test": "jest --runInBand",
+    "test": "jest --runInBand --detectOpenHandles",
     "seed": "node prisma/seeds",
     "start": "node dist/server",
     "clean": "rm -rf dist",

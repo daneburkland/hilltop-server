@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client'
+import { prisma } from './db'
 import { ContextParameters } from 'graphql-yoga/dist/types'
-
-export const prisma = new PrismaClient()
 
 export interface Context {
   prisma: PrismaClient

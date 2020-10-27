@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { prisma } from '../../db'
 const logger = require('pino')()
 const Queue = require('bull')
 const flowQueue = new Queue('flowQueue', process.env.REDIS_URL)

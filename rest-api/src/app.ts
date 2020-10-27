@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client'
 import * as bodyParser from 'body-parser'
 import express, { Request, Response, NextFunction } from 'express'
 const createError = require('http-errors')
@@ -6,7 +5,6 @@ import { getUser } from './utils'
 const flow = require('./routes/flow')
 const webhook = require('./routes/webhook')
 
-export const prisma = new PrismaClient()
 export const app = express()
 
 app.use(bodyParser.json())

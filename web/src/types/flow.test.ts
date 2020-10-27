@@ -2,8 +2,7 @@ import getPort from 'get-port'
 import request from 'supertest'
 import { server } from '../server'
 const Queue = require('bull')
-import { PrismaClient } from '@prisma/client'
-export const prisma = new PrismaClient()
+import { prisma } from '../db'
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
 
@@ -11,21 +10,22 @@ let port: any
 let httpServer: any
 let flowQueue: any
 
-const redisHost = 'ec2-54-86-250-147.compute-1.amazonaws.com'
-const redisPort = '17229'
+const redisHost = 'ec2-3-85-254-196.compute-1.amazonaws.com'
+const redisPort = '18429'
 const redisPassword =
-  'p9a6aeb7b27fc1ec357db9b942fda4bf5c982eccbbbfbc3d24b608937bce28aa9'
+  'p7a9099376bc893b95cc22b57bc575e9b5ed3406f288f0507f5620603543ca5cf'
 
 beforeAll(async (done) => {
   port = await getPort()
   httpServer = await server.start({ port })
   flowQueue = new Queue('flowQueue', process.env.REDIS_URL)
-  console.log(process.env.REDIS_URL)
 
   done()
 })
 afterAll(async (done) => {
   await httpServer.close()
+  await prisma.$disconnect()
+  flowQueue.close()
   done()
 })
 

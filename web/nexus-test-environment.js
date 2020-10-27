@@ -14,10 +14,10 @@ class PrismaTestEnvironment extends NodeEnvironment {
     super(config)
     // Generate a unique schema identifier for this test context
     this.schema = `test_${nanoid()}`
-    this.redisHost = 'ec2-54-86-250-147.compute-1.amazonaws.com'
-    this.redisPort = '17229'
+    this.redisHost = 'ec2-3-85-254-196.compute-1.amazonaws.com'
+    this.redisPort = '18429'
     this.redisPassword =
-      'p9a6aeb7b27fc1ec357db9b942fda4bf5c982eccbbbfbc3d24b608937bce28aa9'
+      'p7a9099376bc893b95cc22b57bc575e9b5ed3406f288f0507f5620603543ca5cf'
 
     this.databaseUrl = `postgres://sample:pleasechangeme@postgres:5432/webtesting?schema=${this.schema}`
     this.redisUrl = `redis://h:${this.redisPassword}@${this.redisHost}:${this.redisPort}`

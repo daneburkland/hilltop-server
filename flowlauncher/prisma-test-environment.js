@@ -24,7 +24,6 @@ class PrismaTestEnvironment extends NodeEnvironment {
     this.s3Bucket = 'hilltop-screenshots-test'
   }
   async setup() {
-    console.log('beginning setup')
     process.env.REDIS_URL = this.redisUrl
     this.global.process.env.REDIS_URL = this.redisUrl
     process.env.DATABASE_URL = this.databaseUrl
@@ -41,23 +40,20 @@ class PrismaTestEnvironment extends NodeEnvironment {
     await exec(
       `yarn rdcli -a ${this.redisPassword} -h ${this.redisHost} -p ${this.redisPort} CLIENT KILL TYPE normal`,
     )
-    console.log('ending setup')
 
     return super.setup()
   }
   async teardown() {
-    console.log('beginning teardown')
     // Drop the schema after the tests have completed
     try {
-      // console.log('flushed db')
       const client = new Client({
         connectionString: 'postgres://sample:pleasechangeme@postgres:5432',
       })
       await client.connect()
+      // TODO: can I revert this?
       await client.query(`DROP DATABASE flowlaunchertesting`)
       // await client.query(`DROP SCHEMA IF EXISTS "${this.schema}" CASCADE`)
       await client.end()
-      console.log('ending teardown')
     } catch (e) {
       console.error(e)
     }

@@ -12,13 +12,16 @@ class PrismaTestEnvironment extends NodeEnvironment {
     super(config)
     // Generate a unique schema identifier for this test context
     this.schema = `test_${nanoid()}`
+    this.redisHost = 'ec2-3-85-254-196.compute-1.amazonaws.com'
+    this.redisPort = '18429'
+    this.redisPassword =
+      'p7a9099376bc893b95cc22b57bc575e9b5ed3406f288f0507f5620603543ca5cf'
+
     // Generate the pg connection string for the test schema
-    this.databaseUrl = `postgres://sample:pleasechangeme@postgres:5432/restApiTesting?schema=${this.schema}`
-    this.redisUrl = `redis://h:pe09526a88f79285d708d6b8edc4ad6291d0c3ff612aac707d1fd28b3fc3aa4ea@ec2-3-226-208-170.compute-1.amazonaws.com:8279`
+    this.databaseUrl = `postgres://sample:pleasechangeme@postgres:5432/restapitesting?schema=${this.schema}`
+    this.redisUrl = `redis://h:${this.redisPassword}@${this.redisHost}:${this.redisPort}`
   }
   async setup() {
-    // Set the required environment variable to contain the connection string
-    // to our database test schema
     process.env.DATABASE_URL = this.databaseUrl
     this.global.process.env.DATABASE_URL = this.databaseUrl
     process.env.REDIS_URL = this.redisUrl
@@ -27,7 +30,10 @@ class PrismaTestEnvironment extends NodeEnvironment {
     await exec(`${prismaBinary} migrate up --create-db --experimental`)
     await exec(`node prisma/seeds`)
     await exec(
-      `yarn rdcli -a 'pe09526a88f79285d708d6b8edc4ad6291d0c3ff612aac707d1fd28b3fc3aa4ea' -h ec2-3-226-208-170.compute-1.amazonaws.com -p 8279 FLUSHDB`,
+      `yarn rdcli -a ${this.redisPassword} -h ${this.redisHost} -p ${this.redisPort} FLUSHDB`,
+    )
+    await exec(
+      `yarn rdcli -a ${this.redisPassword} -h ${this.redisHost} -p ${this.redisPort} CLIENT KILL TYPE normal`,
     )
     return super.setup()
   }
@@ -35,14 +41,12 @@ class PrismaTestEnvironment extends NodeEnvironment {
     // Drop the schema after the tests have completed
     try {
       const client = new Client({
-        connectionString: this.databaseUrl,
+        connectionString: 'postgres://sample:pleasechangeme@postgres:5432',
       })
       await client.connect()
-      await client.query(`DROP SCHEMA IF EXISTS "${this.schema}" CASCADE`)
+      // await client.query(`DROP SCHEMA IF EXISTS "${this.schema}" CASCADE`)
+      await client.query(`DROP DATABASE restapitesting`)
       await client.end()
-      await exec(
-        `yarn rdcli -a 'pe09526a88f79285d708d6b8edc4ad6291d0c3ff612aac707d1fd28b3fc3aa4ea' -h ec2-3-226-208-170.compute-1.amazonaws.com -p 8279 FLUSHDB`,
-      )
     } catch (e) {
       console.error(e)
     }

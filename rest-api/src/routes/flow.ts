@@ -1,12 +1,10 @@
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../db'
 import express, { Request, Response, NextFunction } from 'express'
 const createError = require('http-errors')
 const router = express.Router()
 const logger = require('pino')()
 const Queue = require('bull')
 const flowQueue = new Queue('flowQueue', process.env.REDIS_URL)
-
-const prisma = new PrismaClient()
 
 async function validateResourceOwnership(
   req: Request,

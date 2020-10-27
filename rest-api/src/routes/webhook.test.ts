@@ -1,5 +1,6 @@
+import { prisma } from '../db'
 import request from 'supertest'
-import { app, prisma } from '../app'
+import { app } from '../app'
 import getPort from 'get-port'
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
@@ -21,9 +22,6 @@ afterAll(async (done) => {
 
 beforeEach(async () => {
   // Start with a fresh redis db
-  await exec(
-    `yarn rdcli -a 'pe09526a88f79285d708d6b8edc4ad6291d0c3ff612aac707d1fd28b3fc3aa4ea' -h ec2-3-226-208-170.compute-1.amazonaws.com -p 8279 FLUSHDB`,
-  )
 })
 
 describe('GET /webhook: ', () => {
@@ -42,7 +40,7 @@ describe('GET /webhook: ', () => {
         url: 'test.com',
         owner: {
           connect: {
-            id: 'blueAdmin',
+            id: 'auth0|5f4e4f3c0e634f006d229826',
           },
         },
       },
@@ -81,7 +79,7 @@ describe('GET /webhook: ', () => {
       {
         eventNoun: 'Flow',
         eventVerb: 'executed',
-        ownerId: 'blueAdmin',
+        ownerId: 'auth0|5f4e4f3c0e634f006d229826',
       },
     ])
   })
@@ -137,7 +135,7 @@ describe('PUT /webhook/:id:', () => {
         url: 'test.com',
         owner: {
           connect: {
-            id: 'blueAdmin',
+            id: 'auth0|5f4e4f3c0e634f006d229826',
           },
         },
       },
@@ -178,7 +176,7 @@ describe('PUT /webhook/:id:', () => {
       .expect(200)
   })
   test('a 400 is returned if invalid verb is supplied', async () => {
-    const response = await request(app)
+    await request(app)
       .put('/webhook/' + webhook.id)
       .send({
         verb: 'goofed',
@@ -209,7 +207,7 @@ describe('DELETE /webhook/:id:', () => {
         url: 'test.com',
         owner: {
           connect: {
-            id: 'blueAdmin',
+            id: 'auth0|5f4e4f3c0e634f006d229826',
           },
         },
       },
@@ -272,7 +270,7 @@ describe('GET /webhook/:id:', () => {
         url: 'test.com',
         owner: {
           connect: {
-            id: 'blueAdmin',
+            id: 'auth0|5f4e4f3c0e634f006d229826',
           },
         },
       },
@@ -311,7 +309,7 @@ describe('GET /webhook/:id:', () => {
     expect(response.body).toMatchObject({
       eventNoun: 'Flow',
       eventVerb: 'executed',
-      ownerId: 'blueAdmin',
+      ownerId: 'auth0|5f4e4f3c0e634f006d229826',
     })
   })
 })

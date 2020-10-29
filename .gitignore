@@ -5,3 +5,4 @@ src/generated/
 *.env*
 */.DS_Store
 .DS_Store
+**/keyfile.json

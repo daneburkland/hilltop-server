@@ -15,7 +15,7 @@
     "@types/pg": "^7.14.4",
     "@types/puppeteer": "^3.0.1",
     "@xstate/test": "^0.4.0",
-    "aws-sdk": "^2.716.0",
+    "aws-sdk": "^2.814.0",
     "bull": "^3.15.0",
     "del": "^5.1.0",
     "dockerode": "^3.2.0",

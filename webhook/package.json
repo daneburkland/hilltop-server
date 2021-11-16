@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@prisma/client": "^2.4.1",
-    "aws-sdk": "^2.716.0",
+    "aws-sdk": "^2.814.0",
     "bull": "^3.15.0",
     "del": "^5.1.0",
     "express": "^4.17.1",

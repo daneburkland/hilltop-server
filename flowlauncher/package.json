@@ -21,7 +21,7 @@
     "dockerode": "^3.2.0",
     "dotenv": "^8.2.0",
     "ioredis": "^4.17.3",
-    "nanoid": "^3.1.12",
+    "nanoid": "^3.1.31",
     "nexus-plugin-prisma": "^0.17.0",
     "pg": "^8.3.0",
     "pg-format": "^1.0.4",

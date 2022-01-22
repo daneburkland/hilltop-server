@@ -48,7 +48,7 @@
     "jwks-rsa": "^1.8.1",
     "nanoid": "^3.1.12",
     "nexus-plugin-prisma": "^0.18.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^3.1.1",
     "nodemailer": "^6.4.10",
     "pg": "^8.3.0",
     "pino": "^6.3.2",

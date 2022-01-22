@@ -34,7 +34,7 @@
     "jest-environment-node": "26.3.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.8.1",
-    "nanoid": "^3.1.12",
+    "nanoid": "^3.1.31",
     "nexus-plugin-prisma": "^0.17.0",
     "node-fetch": "^2.6.0",
     "pg": "^8.3.0",

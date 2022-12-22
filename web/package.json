@@ -44,7 +44,7 @@
     "graphql-shield": "5.7.3",
     "graphql-yoga": "^1.18.3",
     "jest-environment-node": "^26.3.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "jwks-rsa": "^1.8.1",
     "nanoid": "^3.1.12",
     "nexus-plugin-prisma": "^0.18.1",
